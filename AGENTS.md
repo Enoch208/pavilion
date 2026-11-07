@@ -2,6 +2,21 @@
 
 Chat is the minimal chat-first agent-native app. `/` redirects to shared sign-in, then `/home`, the editable Get started page. Chat lives at `/chat`; new chats start there. Actions carry capabilities; screens exist only for durable workflows.
 
+## Pavilion dev rules (for coding agents)
+
+Pavilion is a spatial event planner: a person and the agent edit one floor plan through the same actions.
+
+- Every persistent operation is a `defineAction()` in `actions/`. The UI calls it through `useActionQuery`/`useActionMutation`, the agent as a tool. No REST route or agent-only path duplicates an action.
+- Actions stay thin. Geometry, planning, constraints, pricing, revisions and export are pure, deterministic functions under `server/lib/<area>/` with unit tests.
+- A mutating action validates input with zod and resolves the caller from the action context, never from args. It then checks ownership, loads the current state and validates the change. It writes in one transaction, bumps the plan version and records an audit row. It returns the updated resource or a structured validation failure.
+- Writes carry `expectedVersion`; a stale version is rejected, never merged.
+- Geometry is integer millimetres, money is integer cents, rotation is a multiple of 90°.
+- Prices, dimensions and capacities come from the seeded catalog or the user, never from the model.
+- `apply-proposal` and `restore-version` are human-only. The agent proposes; a person applies.
+- Locked objects are never moved by the planner or the agent.
+- Manual editing works with no model key configured.
+- Done = `pnpm typecheck`, `pnpm test`, `pnpm format:check`, `pnpm agent-native:doctor` all clean.
+
 ## Skills
 
 Search with `rg --hidden --follow`; read the exact linked guide before deeper work. `.agents/skills/build-an-app/SKILL.md` — start here for vague requests to create a domain app. `.agents/skills/adding-a-feature/SKILL.md` — cross-area feature checklist. Data/integrations: `.agents/skills/actions/SKILL.md`, `.agents/skills/storing-data/SKILL.md`, `.agents/skills/security/SKILL.md`, `.agents/skills/secrets/SKILL.md`, `.agents/skills/sharing/SKILL.md`. UI: `.agents/skills/frontend-design/SKILL.md`, `.agents/skills/shadcn-ui/SKILL.md`, `.agents/skills/client-side-routing/SKILL.md`. Agent context/workflows: `.agents/skills/context-awareness/SKILL.md`, `.agents/skills/real-time-sync/SKILL.md`, `.agents/skills/reliable-mutations/SKILL.md`, `.agents/skills/performance/SKILL.md`, `.agents/skills/delegate-to-agent/SKILL.md`. Framework: `.agents/skills/agent-native-docs/SKILL.md`, `.agents/skills/agent-native-toolkit/SKILL.md`, `.agents/skills/customizing-agent-native/SKILL.md`.
