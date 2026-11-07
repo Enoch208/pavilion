@@ -18,6 +18,14 @@ export interface NavigationState {
   path?: string;
   publicPath?: string;
   threadId?: string;
+  eventId?: string;
+}
+
+export const EVENTS_PATH = "/events";
+
+function eventIdFromPath(pathname: string): string | undefined {
+  const match = pathname.match(/^\/events\/([^/?#]+)/);
+  return match?.[1] ? decodeURIComponent(match[1]) : undefined;
 }
 
 export function useNavigationState() {
@@ -64,15 +72,19 @@ function matchesPathPrefix(pathname: string, prefix: string): boolean {
 
 export function navigationStateForPath(pathname: string): NavigationState {
   const threadId = threadIdFromPath(pathname);
+  const eventId = eventIdFromPath(pathname);
   return {
     view: viewForPath(pathname),
     path: pathname,
     publicPath: appPathFromLocalRoute(pathname),
     ...(threadId ? { threadId } : {}),
+    ...(eventId ? { eventId } : {}),
   };
 }
 
 function viewForPath(pathname: string): string {
+  if (eventIdFromPath(pathname)) return "event";
+  if (pathname === EVENTS_PATH) return "events";
   if (isChatPathname(pathname)) return "chat";
   if (pathname === HOME_PATH) return "home";
   if (pathname.startsWith("/database")) return "database";
@@ -93,6 +105,8 @@ function pathForView(view?: string): string {
       return NEW_CHAT_PATH;
     case "home":
       return HOME_PATH;
+    case "events":
+      return EVENTS_PATH;
     case "database":
       return "/database";
     case "extensions":
@@ -110,7 +124,14 @@ function pathForView(view?: string): string {
   }
 }
 
-export function pathForCommand(command: any): string {
+export function pathForCommand(
+  command: NavigationState | null | undefined,
+): string {
+  const eventId =
+    typeof command?.eventId === "string" ? command.eventId.trim() : "";
+  if (command?.view === "event" && eventId) {
+    return `${EVENTS_PATH}/${encodeURIComponent(eventId)}`;
+  }
   const path = pathForView(command?.view);
   if (command?.view !== "chat" && command?.view !== "ask") return path;
   const threadId =

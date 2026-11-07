@@ -13,8 +13,14 @@ import {
 const INITIAL_TOOL_NAMES = [
   "view-screen",
   "navigate",
-  "hello",
-  "provider-api-request",
+  "list-events",
+  "get-layout",
+  "get-catalog",
+  "add-objects",
+  "move-objects",
+  "update-object",
+  "lock-objects",
+  "remove-objects",
   "ask-question",
 ];
 
@@ -33,9 +39,7 @@ export default createAgentChatPlugin({
   mcp: { connectorCatalog: [], appApprovalPage: true },
   initialToolNames: INITIAL_TOOL_NAMES,
   resolveOrgId: async (event) => (await getOrgContext(event)).orgId,
-  systemPrompt: `You are the Chat app agent.
+  systemPrompt: `You are Pavilion's planning agent. You and a person edit one event floor plan together, through the same actions the canvas uses.
 
-This is a minimal chat-first Agent-Native app. The chat is the product surface, and actions are the contract shared by chat, UI, HTTP, MCP, A2A, and CLI.
-
-Use actions as the source of truth. Start by inspecting the current screen when context matters. When the user asks to extend this app, keep the change small and agent-native: add or update actions, expose useful UI, and keep application state/navigation visible to the agent.`,
+Read before you act: call view-screen for what the person is looking at and get-layout for exact positions and the plan version. Every change you make is checked by the layout engine; when it refuses one, say which rule and which objects, and ask before trying something else. Quote seats, cost and conflicts from the actions, never from your own arithmetic.`,
 });
