@@ -5,6 +5,9 @@ export const ERROR_STATUS = {
   VERSION_CONFLICT: 409,
   OBJECT_LOCKED: 423,
   LAYOUT_INVALID: 422,
+  PROPOSAL_STALE: 409,
+  PROPOSAL_CLOSED: 409,
+  HUMAN_ONLY: 403,
 } as const;
 
 export type PavilionErrorCode = keyof typeof ERROR_STATUS;

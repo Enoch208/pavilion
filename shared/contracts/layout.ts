@@ -47,39 +47,3 @@ export const LayoutSummary = z.object({
   remainingCents: z.number().int(),
   overBudget: z.boolean(),
 });
-
-export const LayoutView = z.object({
-  event: z.object({
-    id: Id,
-    title: z.string(),
-    eventType: z.string(),
-    eventDate: z.string().nullable(),
-    attendeeTarget: z.number().int().min(0),
-    currency: z.string(),
-    budgetCents: Cents,
-    isDemo: z.boolean(),
-  }),
-  venue: z.object({
-    name: z.string(),
-    widthMm: Mm.positive(),
-    heightMm: Mm.positive(),
-    unitDisplay: z.enum(["m", "ft"]),
-  }),
-  plan: z.object({
-    id: Id,
-    version: Version,
-    mode: z.enum(["theatre", "banquet", "workshop", "exhibition"]),
-    status: z.enum(["draft", "approved"]),
-  }),
-  objects: z.array(PlacedObject),
-  summary: LayoutSummary,
-  issues: z.array(LayoutIssue),
-});
-export type LayoutView = z.infer<typeof LayoutView>;
-
-export const LayoutChange = z.object({
-  planId: Id,
-  version: Version,
-  objects: z.array(PlacedObject),
-});
-export type LayoutChange = z.infer<typeof LayoutChange>;

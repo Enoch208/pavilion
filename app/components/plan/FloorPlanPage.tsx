@@ -4,7 +4,8 @@ import {
   useActionQuery,
 } from "@agent-native/core/client/hooks";
 import { useT } from "@agent-native/core/client/i18n";
-import type { LayoutView, PlacedObject } from "@shared/contracts/layout";
+import type { PlacedObject } from "@shared/contracts/layout";
+import type { LayoutView } from "@shared/contracts/view";
 import { useState, type KeyboardEvent } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";

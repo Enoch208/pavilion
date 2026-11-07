@@ -47,6 +47,7 @@ export const layoutPlans = pgTable("pv_layout_plans", {
   status: text("status", { enum: ["draft", "approved"] })
     .notNull()
     .default("draft"),
+  minAisleMm: integer("min_aisle_mm").notNull().default(1200),
   updatedAt: instant("updated_at").notNull().defaultNow(),
 });
 
@@ -84,5 +85,44 @@ export const layoutActions = pgTable("pv_layout_actions", {
     .$type<Record<string, unknown>>()
     .notNull()
     .default({}),
+  createdAt: instant("created_at").notNull().defaultNow(),
+});
+
+const layoutMode = (name: string) =>
+  text(name, { enum: ["theatre", "banquet", "workshop", "exhibition"] });
+
+export const layoutProposals = pgTable("pv_layout_proposals", {
+  id: text("id").primaryKey(),
+  planId: text("plan_id").notNull(),
+  ownerEmail: text("owner_email").notNull(),
+  baseVersion: integer("base_version").notNull(),
+  mode: layoutMode("mode").notNull(),
+  attendeeTarget: integer("attendee_target").notNull(),
+  minAisleMm: integer("min_aisle_mm").notNull(),
+  objects: jsonb("objects").$type<unknown[]>().notNull(),
+  report: jsonb("report").$type<Record<string, unknown>>().notNull(),
+  summary: text("summary").notNull(),
+  status: text("status", {
+    enum: ["pending", "accepted", "rejected", "stale"],
+  })
+    .notNull()
+    .default("pending"),
+  createdBy: text("created_by", {
+    enum: ["human", "agent", "system"],
+  }).notNull(),
+  createdAt: instant("created_at").notNull().defaultNow(),
+  decidedAt: instant("decided_at"),
+});
+
+export const layoutVersions = pgTable("pv_layout_versions", {
+  id: text("id").primaryKey(),
+  planId: text("plan_id").notNull(),
+  ownerEmail: text("owner_email").notNull(),
+  version: integer("version").notNull(),
+  reason: text("reason").notNull(),
+  objects: jsonb("objects").$type<unknown[]>().notNull(),
+  attendeeTarget: integer("attendee_target").notNull(),
+  mode: layoutMode("mode").notNull(),
+  minAisleMm: integer("min_aisle_mm").notNull(),
   createdAt: instant("created_at").notNull().defaultNow(),
 });

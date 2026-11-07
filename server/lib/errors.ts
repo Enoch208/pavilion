@@ -18,3 +18,14 @@ export function reject(
     ...(details ? { details } : {}),
   });
 }
+
+export function failAfterWrite(
+  code: PavilionErrorCode,
+  message: string,
+  details?: Record<string, unknown>,
+): never {
+  return pavilionErrors.fail(message, code, {
+    statusCode: ERROR_STATUS[code],
+    ...(details ? { details } : {}),
+  });
+}

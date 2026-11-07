@@ -1,4 +1,5 @@
-import type { LayoutView, PlacedObject } from "@shared/contracts/layout";
+import type { PlacedObject } from "@shared/contracts/layout";
+import type { LayoutView } from "@shared/contracts/view";
 import { findIssues } from "@shared/geometry";
 import { toShape } from "@shared/layout/shape";
 import { summarizeLayout } from "@shared/layout/summary";

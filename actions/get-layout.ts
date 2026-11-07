@@ -5,7 +5,7 @@ import { z } from "zod";
 import { pavilionErrors } from "../server/lib/errors.js";
 import { buildLayoutView } from "../server/lib/layout/view.js";
 import { requireScope } from "../server/lib/scope.js";
-import { LayoutView } from "../shared/contracts/layout.js";
+import { LayoutView } from "../shared/contracts/view.js";
 
 export default defineAction({
   description:

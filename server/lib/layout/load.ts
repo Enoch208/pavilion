@@ -66,3 +66,19 @@ export async function findEvent(scope: Scope, eventId: string) {
     );
   return row ?? null;
 }
+
+export async function requireEventRow(
+  db: DbLike,
+  scope: Scope,
+  eventId: string,
+) {
+  const { events } = schema;
+  const [event] = await db
+    .select()
+    .from(events)
+    .where(
+      and(eq(events.id, eventId), eq(events.ownerEmail, scope.ownerEmail)),
+    );
+  if (!event) reject("NOT_FOUND", "That event does not exist.");
+  return event;
+}

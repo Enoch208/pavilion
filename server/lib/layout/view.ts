@@ -1,8 +1,9 @@
-import type { LayoutView } from "../../../shared/contracts/layout.js";
+import type { LayoutView } from "../../../shared/contracts/view.js";
 import { findIssues } from "../../../shared/geometry/index.js";
 import { summarizeLayout } from "../../../shared/layout/summary.js";
 import { getDb } from "../../db/index.js";
 import { reject } from "../errors.js";
+import { findPendingProposal, toProposalView } from "../proposals/records.js";
 import type { Scope } from "../scope.js";
 import { findEvent, loadObjects } from "./load.js";
 import { toShape } from "./records.js";
@@ -25,6 +26,7 @@ export async function findLayoutView(
   if (!found) return null;
   const { event, venue, plan } = found;
   const objects = await loadObjects(getDb(), scope, plan.id);
+  const proposal = await findPendingProposal(getDb(), scope, plan.id);
   return {
     event: {
       id: event.id,
@@ -47,6 +49,7 @@ export async function findLayoutView(
       version: plan.version,
       mode: plan.mode,
       status: plan.status,
+      minAisleMm: plan.minAisleMm,
     },
     objects,
     summary: summarizeLayout({
@@ -55,5 +58,6 @@ export async function findLayoutView(
       objects,
     }),
     issues: findIssues(objects.map(toShape), venue),
+    proposal: proposal ? toProposalView(proposal, plan.version) : null,
   };
 }

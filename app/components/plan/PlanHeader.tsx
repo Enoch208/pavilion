@@ -1,5 +1,5 @@
 import { useT } from "@agent-native/core/client/i18n";
-import type { LayoutView } from "@shared/contracts/layout";
+import type { LayoutView } from "@shared/contracts/view";
 import {
   IconAlertTriangle,
   IconArrowLeft,

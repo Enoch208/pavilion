@@ -98,3 +98,21 @@ export async function recordChange(
   });
   return version;
 }
+
+export async function recordNote(
+  tx: Tx,
+  scope: Scope,
+  plan: PlanRow,
+  change: { action: string; summary: string; payload: Record<string, unknown> },
+) {
+  await tx.insert(schema.layoutActions).values({
+    id: randomUUID(),
+    planId: plan.id,
+    ownerEmail: scope.ownerEmail,
+    actor: scope.actor,
+    action: change.action,
+    version: plan.version,
+    summary: change.summary,
+    payload: change.payload,
+  });
+}

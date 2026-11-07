@@ -3,7 +3,8 @@ import {
   useActionMutation,
 } from "@agent-native/core/client/hooks";
 import { useT } from "@agent-native/core/client/i18n";
-import type { LayoutView, PlacedObject } from "@shared/contracts/layout";
+import type { PlacedObject } from "@shared/contracts/layout";
+import type { LayoutView } from "@shared/contracts/view";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { toast } from "sonner";

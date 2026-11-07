@@ -77,4 +77,43 @@ CREATE TABLE IF NOT EXISTS pv_layout_actions (
 CREATE INDEX IF NOT EXISTS pv_layout_actions_plan_created_idx ON pv_layout_actions (plan_id, created_at);
 `,
   },
+  {
+    version: 2,
+    name: "pavilion_proposals_v2",
+    sql: `
+ALTER TABLE pv_layout_plans ADD COLUMN IF NOT EXISTS min_aisle_mm INTEGER NOT NULL DEFAULT 1200 CHECK (min_aisle_mm >= 600);
+
+CREATE TABLE IF NOT EXISTS pv_layout_proposals (
+  id TEXT PRIMARY KEY,
+  plan_id TEXT NOT NULL REFERENCES pv_layout_plans(id) ON DELETE CASCADE,
+  owner_email TEXT NOT NULL,
+  base_version INTEGER NOT NULL CHECK (base_version >= 0),
+  mode TEXT NOT NULL CHECK (mode IN ('theatre', 'banquet', 'workshop', 'exhibition')),
+  attendee_target INTEGER NOT NULL CHECK (attendee_target >= 0),
+  min_aisle_mm INTEGER NOT NULL CHECK (min_aisle_mm >= 600),
+  objects JSONB NOT NULL,
+  report JSONB NOT NULL,
+  summary TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected', 'stale')),
+  created_by TEXT NOT NULL CHECK (created_by IN ('human', 'agent', 'system')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  decided_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS pv_layout_proposals_plan_created_idx ON pv_layout_proposals (plan_id, created_at);
+
+CREATE TABLE IF NOT EXISTS pv_layout_versions (
+  id TEXT PRIMARY KEY,
+  plan_id TEXT NOT NULL REFERENCES pv_layout_plans(id) ON DELETE CASCADE,
+  owner_email TEXT NOT NULL,
+  version INTEGER NOT NULL CHECK (version >= 0),
+  reason TEXT NOT NULL,
+  objects JSONB NOT NULL,
+  attendee_target INTEGER NOT NULL,
+  mode TEXT NOT NULL,
+  min_aisle_mm INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS pv_layout_versions_plan_created_idx ON pv_layout_versions (plan_id, created_at);
+`,
+  },
 ];

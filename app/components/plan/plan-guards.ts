@@ -1,4 +1,4 @@
-import type { LayoutView } from "@shared/contracts/layout";
+import type { LayoutView } from "@shared/contracts/view";
 import { describeIssues } from "@shared/layout/describe";
 
 import { applyMoves, type Move } from "./optimistic";
