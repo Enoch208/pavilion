@@ -7,7 +7,7 @@ Chat is the minimal chat-first agent-native app. `/` redirects to shared sign-in
 Pavilion is a spatial event planner: a person and the agent edit one floor plan through the same actions.
 
 - Every persistent operation is a `defineAction()` in `actions/`. The UI calls it through `useActionQuery`/`useActionMutation`, the agent as a tool. No REST route or agent-only path duplicates an action.
-- Actions stay thin. Geometry, planning, constraints, pricing, revisions and export are pure, deterministic functions under `server/lib/<area>/` with unit tests.
+- Actions stay thin. Geometry, planning, constraints, pricing, revisions and export are pure, deterministic functions with unit tests in `tests/`: under `shared/<area>/` when the canvas needs them too (geometry, catalog, layout summary), otherwise under `server/lib/<area>/`.
 - A mutating action validates input with zod and resolves the caller from the action context, never from args. It then checks ownership, loads the current state and validates the change. It writes in one transaction, bumps the plan version and records an audit row. It returns the updated resource or a structured validation failure.
 - Writes carry `expectedVersion`; a stale version is rejected, never merged.
 - Geometry is integer millimetres, money is integer cents, rotation is a multiple of 90°.
