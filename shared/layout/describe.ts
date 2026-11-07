@@ -1,25 +1,42 @@
 import type { LayoutIssue } from "../geometry/index.js";
 
-export function describeIssue(
-  issue: LayoutIssue,
-  labelOf: (objectId: string) => string,
-): string {
-  if (issue.code === "OUT_OF_BOUNDS") {
-    return `${labelOf(issue.objectIds[0])} would extend past the venue walls.`;
-  }
-  const [a, b] = issue.objectIds;
-  return `${labelOf(a)} and ${labelOf(b)} would overlap.`;
+const NAMES_SHOWN = 3;
+
+function nameList(names: readonly string[]): string {
+  const shown = names.slice(0, NAMES_SHOWN);
+  const more = names.length - shown.length;
+  if (more > 0) return `${shown.join(", ")} and ${more} more`;
+  if (shown.length <= 1) return shown.join("");
+  return `${shown.slice(0, -1).join(", ")} and ${shown[shown.length - 1]}`;
 }
 
 export function describeIssues(
   issues: readonly LayoutIssue[],
   labelOf: (objectId: string) => string,
+  movedIds: ReadonlySet<string> = new Set(),
 ): string {
-  const shown = issues
-    .slice(0, 3)
-    .map((issue) => describeIssue(issue, labelOf));
-  const more = issues.length - shown.length;
+  const sentences: string[] = [];
+  const overlaps = new Map<string, string[]>();
+  for (const issue of issues) {
+    if (issue.code === "OUT_OF_BOUNDS") {
+      sentences.push(
+        `${labelOf(issue.objectIds[0])} would extend past the venue walls.`,
+      );
+      continue;
+    }
+    const [a, b] = issue.objectIds;
+    const [mover, other] =
+      movedIds.has(b) && !movedIds.has(a) ? [b, a] : [a, b];
+    overlaps.set(mover, [...(overlaps.get(mover) ?? []), other]);
+  }
+  for (const [mover, others] of overlaps) {
+    sentences.push(
+      `${labelOf(mover)} would overlap ${nameList(others.map(labelOf))}.`,
+    );
+  }
+  const shown = sentences.slice(0, NAMES_SHOWN);
+  const more = sentences.length - shown.length;
   return more > 0
-    ? `${shown.join(" ")} ${more} more conflict${more === 1 ? "" : "s"}.`
+    ? `${shown.join(" ")} ${more} more objects would clash.`
     : shown.join(" ");
 }

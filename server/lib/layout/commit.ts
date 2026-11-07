@@ -39,7 +39,7 @@ export function assertPlaceable(
   const labels = new Map(objects.map((object) => [object.id, object.label]));
   reject(
     "LAYOUT_INVALID",
-    describeIssues(issues, (id) => labels.get(id) ?? id),
+    describeIssues(issues, (id) => labels.get(id) ?? id, changedIds),
     { issues },
   );
 }
