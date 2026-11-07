@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 
 import { money } from "./format";
 
-type Props = { view: LayoutView; onReset: () => void };
+type Props = { view: LayoutView; actions: ReactNode; onReset: () => void };
 
 function Stat(props: { children: ReactNode; warn: boolean }) {
   return (
@@ -35,7 +35,7 @@ function Stat(props: { children: ReactNode; warn: boolean }) {
   );
 }
 
-export function PlanHeader({ view, onReset }: Props) {
+export function PlanHeader({ view, actions, onReset }: Props) {
   const t = useT();
   const { summary, event } = view;
   const issueCount = view.issues.length;
@@ -89,25 +89,28 @@ export function PlanHeader({ view, onReset }: Props) {
           ? t("plan.issues", { count: issueCount })
           : t("plan.noIssues")}
       </Stat>
-      {event.isDemo ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-auto size-8"
-              aria-label={t("plan.more")}
-            >
-              <IconDots className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={onReset}>
-              {t("plan.reset")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : null}
+      <div className="ml-auto flex items-center gap-1">
+        {actions}
+        {event.isDemo ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                aria-label={t("plan.more")}
+              >
+                <IconDots className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={onReset}>
+                {t("plan.reset")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
+      </div>
     </header>
   );
 }

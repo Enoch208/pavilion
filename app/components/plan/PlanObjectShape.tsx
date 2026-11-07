@@ -25,12 +25,27 @@ const LABEL_KINDS = new Set<PlacedObject["kind"]>([
   "round-table",
 ]);
 
+export type ObjectChange = "added" | "moved" | "removed";
+
+const CHANGE_STYLE: Record<
+  ObjectChange,
+  { className: string; dash: string | undefined }
+> = {
+  added: { className: "fill-primary/30 stroke-primary", dash: undefined },
+  moved: { className: "stroke-primary", dash: "3 2" },
+  removed: {
+    className: "fill-transparent stroke-destructive opacity-70",
+    dash: "2 3",
+  },
+};
+
 type Props = {
   object: PlacedObject;
   offset: { dx: number; dy: number } | null;
   selected: boolean;
   conflicted: boolean;
-  onPointerDown: (id: string, event: PointerEvent) => void;
+  change: ObjectChange | null;
+  onPointerDown: ((id: string, event: PointerEvent) => void) | null;
 };
 
 export function PlanObjectShape(props: Props) {
@@ -41,27 +56,33 @@ export function PlanObjectShape(props: Props) {
     yMm: object.yMm + (props.offset?.dy ?? 0),
   });
   const round = object.kind === "round-table";
+  const change = props.change ? CHANGE_STYLE[props.change] : null;
   const shapeClass = cn(
     FILL_BY_KIND[object.kind],
     props.conflicted && "fill-destructive/30 stroke-destructive",
     props.selected && !props.conflicted && "stroke-primary",
+    change?.className,
   );
-  const strokeWidth = props.selected || props.conflicted ? 2.5 : 1;
-  const dash = object.locked || object.kind === "zone" ? "6 4" : undefined;
+  const strokeWidth = props.selected || props.conflicted || change ? 2.5 : 1;
+  const dash =
+    change?.dash ??
+    (object.locked || object.kind === "zone" ? "6 4" : undefined);
   const state = [
     object.locked ? "locked" : null,
     props.conflicted ? "conflict" : null,
+    props.change,
   ].filter(Boolean);
 
   return (
     <g
       data-object-id={object.id}
       className={cn(
-        "cursor-grab",
-        object.locked && "cursor-not-allowed",
+        props.onPointerDown && "cursor-grab",
+        props.onPointerDown && object.locked && "cursor-not-allowed",
         props.offset && "cursor-grabbing",
+        !props.onPointerDown && "pointer-events-none",
       )}
-      onPointerDown={(event) => props.onPointerDown(object.id, event)}
+      onPointerDown={(event) => props.onPointerDown?.(object.id, event)}
     >
       <title>{[object.label, ...state].join(", ")}</title>
       {round ? (

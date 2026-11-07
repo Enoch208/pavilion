@@ -1,25 +1,37 @@
 import { useT } from "@agent-native/core/client/i18n";
+import type { PlacedObject } from "@shared/contracts/layout";
 import type { LayoutView } from "@shared/contracts/view";
 import { findIssues } from "@shared/geometry";
+import type { LayoutDiff } from "@shared/layout/diff";
 import { toShape } from "@shared/layout/shape";
 import { useMemo, useRef, type KeyboardEvent } from "react";
 
 import { metres } from "./format";
 import type { Move } from "./optimistic";
-import { PlanObjectShape } from "./PlanObjectShape";
+import { PlanObjectShape, type ObjectChange } from "./PlanObjectShape";
 import { marqueeRect, useCanvasPointer, type Drag } from "./use-canvas-pointer";
 
 const MARGIN_MM = 600;
 const GRID_LINE_MM = 1_000;
 
+export type Review = { objects: PlacedObject[]; diff: LayoutDiff };
+
 type Props = {
   view: LayoutView;
+  review: Review | null;
   selectedIds: readonly string[];
   onSelect: (ids: string[]) => void;
   onDrop: (moves: Move[]) => void;
   onLockedDrag: (label: string) => void;
   onKeyDown: (event: KeyboardEvent<SVGSVGElement>) => void;
 };
+
+function changeOf(review: Review | null, id: string): ObjectChange | null {
+  if (!review) return null;
+  if (review.diff.added.has(id)) return "added";
+  if (review.diff.moved.has(id)) return "moved";
+  return null;
+}
 
 function previewConflicts(view: LayoutView, drag: Drag | null) {
   if (drag?.kind !== "move" || (drag.dx === 0 && drag.dy === 0)) {
@@ -55,12 +67,17 @@ export function FloorPlanCanvas(props: Props) {
     () => new Set(props.selectedIds),
     [props.selectedIds],
   );
-  const conflicts = useMemo(() => previewConflicts(view, drag), [view, drag]);
+  const { review } = props;
+  const conflicts = useMemo(
+    () => (review ? new Set<string>() : previewConflicts(view, drag)),
+    [view, drag, review],
+  );
   const moving = drag?.kind === "move" ? new Set(drag.ids) : null;
   const { widthMm, heightMm } = view.venue;
-  const ordered = [...view.objects].sort(
+  const ordered = [...(review?.objects ?? view.objects)].sort(
     (a, b) => Number(a.kind !== "zone") - Number(b.kind !== "zone"),
   );
+  const interactive = review === null;
 
   return (
     <svg
@@ -76,11 +93,11 @@ export function FloorPlanCanvas(props: Props) {
       viewBox={`${-MARGIN_MM} ${-MARGIN_MM} ${widthMm + MARGIN_MM * 2} ${heightMm + MARGIN_MM * 2}`}
       preserveAspectRatio="xMidYMid meet"
       className="size-full touch-none select-none rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      onPointerDown={pointer.onCanvasPointerDown}
-      onPointerMove={pointer.onPointerMove}
-      onPointerUp={pointer.onPointerUp}
-      onPointerCancel={pointer.onPointerUp}
-      onKeyDown={props.onKeyDown}
+      onPointerDown={interactive ? pointer.onCanvasPointerDown : undefined}
+      onPointerMove={interactive ? pointer.onPointerMove : undefined}
+      onPointerUp={interactive ? pointer.onPointerUp : undefined}
+      onPointerCancel={interactive ? pointer.onPointerUp : undefined}
+      onKeyDown={interactive ? props.onKeyDown : undefined}
     >
       <defs>
         <pattern
@@ -125,9 +142,21 @@ export function FloorPlanCanvas(props: Props) {
           key={object.id}
           object={object}
           offset={moving?.has(object.id) && drag?.kind === "move" ? drag : null}
-          selected={selected.has(object.id)}
+          selected={interactive && selected.has(object.id)}
           conflicted={conflicts.has(object.id)}
-          onPointerDown={pointer.onObjectPointerDown}
+          change={changeOf(review, object.id)}
+          onPointerDown={interactive ? pointer.onObjectPointerDown : null}
+        />
+      ))}
+      {review?.diff.removed.map((object) => (
+        <PlanObjectShape
+          key={`removed-${object.id}`}
+          object={object}
+          offset={null}
+          selected={false}
+          conflicted={false}
+          change="removed"
+          onPointerDown={null}
         />
       ))}
       {drag?.kind === "marquee" ? (

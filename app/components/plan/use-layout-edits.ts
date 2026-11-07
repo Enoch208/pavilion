@@ -57,6 +57,7 @@ export function useLayoutEdits(eventId: string) {
           queryClient.setQueryData(queryKey, snapshot.previous);
         }
         toast.error(actionErrorMessage(error) ?? t("plan.saveFailed"));
+        void queryClient.invalidateQueries({ queryKey });
       },
     };
   }
@@ -86,8 +87,10 @@ export function useLayoutEdits(eventId: string) {
     ),
   );
   const add = useActionMutation("add-objects", {
-    onError: (error) =>
-      toast.error(actionErrorMessage(error) ?? t("plan.saveFailed")),
+    onError: (error) => {
+      toast.error(actionErrorMessage(error) ?? t("plan.saveFailed"));
+      void queryClient.invalidateQueries({ queryKey });
+    },
   });
 
   function planRef() {
