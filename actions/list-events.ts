@@ -27,6 +27,7 @@ export default defineAction({
         eventType: events.eventType,
         attendeeTarget: events.attendeeTarget,
         budgetCents: events.budgetCents,
+        currency: events.currency,
         demoKey: events.demoKey,
       })
       .from(events)
