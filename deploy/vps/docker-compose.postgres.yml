@@ -1,0 +1,18 @@
+services:
+  pavilion-postgres:
+    image: postgres:16-alpine
+    container_name: pavilion-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pavilion
+      POSTGRES_USER: pavilion
+      POSTGRES_PASSWORD: ${PAVILION_PG_PASSWORD:?set PAVILION_PG_PASSWORD}
+    command:
+      ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=40"]
+    ports:
+      - "127.0.0.1:54370:5432"
+    volumes:
+      - pavilion-pg:/var/lib/postgresql/data
+    mem_limit: 384m
+volumes:
+  pavilion-pg:

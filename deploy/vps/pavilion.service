@@ -1,0 +1,24 @@
+[Unit]
+Description=Pavilion (Agent-Native app, Nitro node server)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pavilion
+Group=pavilion
+WorkingDirectory=/srv/pavilion/current
+EnvironmentFile=/etc/pavilion/pavilion.env
+ExecStart=/usr/bin/env node --max-old-space-size=640 .output/server/index.mjs
+Restart=always
+RestartSec=3
+MemoryHigh=700M
+MemoryMax=900M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/srv/pavilion
+
+[Install]
+WantedBy=multi-user.target
