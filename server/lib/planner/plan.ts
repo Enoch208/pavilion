@@ -4,18 +4,55 @@ import { findIssues } from "../../../shared/geometry/index.js";
 import { toShape } from "../../../shared/layout/shape.js";
 import { summarizeLayout } from "../../../shared/layout/summary.js";
 import { assignSeats, type Assignment } from "./assign.js";
-import { SEATING_KINDS, seatingContext, theatreParams } from "./context.js";
-import { scoreCandidate } from "./score.js";
+import {
+  BANQUET_CHAIR_RING_MM,
+  BANQUET_SERVICE_LANE_MM,
+  banquetLanes,
+  banquetParams,
+  SEATING_KINDS,
+  seatingContext,
+  theatreParams,
+} from "./context.js";
+import { scoreCandidate, type PitchRange } from "./score.js";
 import { candidateRows, fillRows } from "./seating.js";
 import { describePlan } from "./summary.js";
 import type {
   PlanningInput,
+  PlanningMode,
   PlanResult,
   SeatingContext,
   SeatingParams,
 } from "./types.js";
 
 const DRAFT_ID_PREFIX = "draft:";
+
+type Strategy = {
+  itemId: string;
+  ringMm: number;
+  pitchRange: (minAisleMm: number, item: CatalogItem) => PitchRange;
+  params: (minAisleMm: number, item: CatalogItem) => SeatingParams[];
+};
+
+const STRATEGIES: Record<PlanningMode, Strategy> = {
+  theatre: {
+    itemId: "chair-standard",
+    ringMm: 0,
+    pitchRange: () => ({ tightestMm: 850, roomiestMm: 1_000 }),
+    params: (minAisleMm, item) => theatreParams(minAisleMm, item.widthMm),
+  },
+  banquet: {
+    itemId: "table-round-8",
+    ringMm: BANQUET_CHAIR_RING_MM,
+    pitchRange: (minAisleMm, item) => {
+      const service = item.widthMm + BANQUET_CHAIR_RING_MM * 2;
+      return {
+        tightestMm: service + BANQUET_SERVICE_LANE_MM,
+        roomiestMm: service + Math.max(...banquetLanes(minAisleMm)),
+      };
+    },
+    params: (minAisleMm, item) => banquetParams(minAisleMm, item.widthMm),
+  },
+};
 
 type Candidate = {
   seated: number;
@@ -41,6 +78,7 @@ function evaluate(
     replaceable: PlacedObject[];
     item: CatalogItem;
     needed: number;
+    pitchRange: PitchRange;
   },
 ): Candidate | null {
   const rows = candidateRows(context, params);
@@ -73,6 +111,7 @@ function evaluate(
       seats: summary.seats,
       attendeeTarget: input.attendeeTarget,
       params,
+      pitchRange: shared.pitchRange,
       minAisleMm: input.minAisleMm,
       costCents: summary.totalCostCents,
       budgetCents: input.budgetCents,
@@ -95,7 +134,8 @@ export function planLayout(input: PlanningInput): PlanResult {
   const replaceable = input.objects.filter(
     (object) => SEATING_KINDS.has(object.kind) && !object.locked,
   );
-  const item = requireItem("chair-standard");
+  const strategy = STRATEGIES[input.mode];
+  const item = requireItem(strategy.itemId);
   const lockedSeats = kept
     .filter((object) => SEATING_KINDS.has(object.kind))
     .reduce((sum, object) => sum + object.capacity, 0);
@@ -104,13 +144,23 @@ export function planLayout(input: PlanningInput): PlanResult {
     venue: input.venue,
     kept,
     minAisleMm: input.minAisleMm,
-    unitWidthMm: item.widthMm,
-    unitDepthMm: item.heightMm,
+    unit: {
+      widthMm: item.widthMm,
+      depthMm: item.heightMm,
+      ringMm: strategy.ringMm,
+    },
     clearanceMm: input.minAisleMm,
   });
-  const shared = { kept, replaceable, item, needed };
+  const shared = {
+    kept,
+    replaceable,
+    item,
+    needed,
+    pitchRange: strategy.pitchRange(input.minAisleMm, item),
+  };
+  const options = strategy.params(input.minAisleMm, item);
   let best: Candidate | null = null;
-  for (const params of theatreParams(input.minAisleMm)) {
+  for (const params of options) {
     const candidate = evaluate(input, context, params, shared);
     if (candidate && (!best || ranksAbove(candidate, best))) best = candidate;
   }
@@ -118,7 +168,7 @@ export function planLayout(input: PlanningInput): PlanResult {
     best ??
     ({
       seated: 0,
-      params: theatreParams(input.minAisleMm)[0]!,
+      params: options[0]!,
       assignment: {
         objects: [],
         added: 0,

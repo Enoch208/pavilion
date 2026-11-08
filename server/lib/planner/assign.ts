@@ -16,7 +16,7 @@ export function rowLetter(index: number): string {
 
 function labelsFor(seats: readonly Seat[], item: CatalogItem): string[] {
   if (item.kind !== "chair") {
-    return seats.map((_, index) => `${item.name} ${index + 1}`);
+    return seats.map((_, index) => `Table ${index + 1}`);
   }
   const rows = [...new Set(seats.map((seat) => seat.row))].sort(
     (a, b) => a - b,

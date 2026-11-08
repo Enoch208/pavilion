@@ -4,6 +4,8 @@ import type { Assignment } from "./assign.js";
 import type { PlanningInput, PlanResult, SeatingParams } from "./types.js";
 
 const metres = (mm: number) => `${Number((mm / 1_000).toFixed(2))} m`;
+const plural = (count: number, noun: string) =>
+  `${count} ${noun}${count === 1 ? "" : "s"}`;
 
 export function describePlan(
   input: PlanningInput,
@@ -33,18 +35,31 @@ export function describePlan(
       `Shortfall: ${after.seats} of ${input.attendeeTarget} guests seated, ${after.unseated} short. The hall has no more room with ${metres(input.minAisleMm)} clearance around the walls and fixed objects.`,
     );
   }
+  if (after.unseated > 0 && input.mode === "banquet") {
+    notes.push(
+      "Each round table needs 0.5 m around it for chairs and at least a 0.9 m lane to the next table's chairs. Theatre rows seat more in the same floor.",
+    );
+  }
   if (lockedKept > 0) {
     notes.push(
       `${lockedKept} locked object${lockedKept === 1 ? "" : "s"} kept exactly in place.`,
     );
   }
   const { params } = chosen;
-  const summary = [
-    `Theatre seating for ${after.seats} in ${chosen.rows} rows`,
-    `${params.blocks} blocks of up to ${params.unitsPerBlock}`,
-    `${metres(params.aisleMm)} aisles`,
-    `${metres(params.pitchMm)} row spacing.`,
-  ].join(", ");
+  const tables = chosen.assignment.objects.length;
+  const summary =
+    input.mode === "banquet"
+      ? [
+          `Banquet seating for ${after.seats} at ${plural(tables, "table")} of 8 in ${plural(chosen.rows, "row")}`,
+          `${metres(params.aisleMm)} aisles`,
+          `${metres(params.pitchMm)} between table centres.`,
+        ].join(", ")
+      : [
+          `Theatre seating for ${after.seats} in ${plural(chosen.rows, "row")}`,
+          `${params.blocks} blocks of up to ${params.unitsPerBlock}`,
+          `${metres(params.aisleMm)} aisles`,
+          `${metres(params.pitchMm)} row spacing.`,
+        ].join(", ");
   return {
     objects: chosen.objects,
     summary: `${summary} ${added} added, ${moved} moved, ${removed} removed.`,

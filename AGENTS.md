@@ -13,7 +13,7 @@ Pavilion is a spatial event planner. A person and the agent edit one floor plan 
 
 ### Redesigns are proposals
 
-- For "fit 20 more", "rearrange the seating" or "make more room", call `propose-layout` with the guest count (and `minAisleMm` if asked). The deterministic planner keeps locked and non-seating objects in place and keeps seats at least the minimum aisle from walls and fixed objects. The floor plan does not change.
+- For "fit 20 more", "rearrange the seating" or "make more room", call `propose-layout` with the guest count (and `mode` "theatre" or "banquet", and `minAisleMm`, if asked). The deterministic planner keeps locked and non-seating objects in place and keeps seats at least the minimum aisle from walls and fixed objects. The floor plan does not change.
 - Then report from the returned proposal: seats before and after, cost before and after, how many objects are added, moved and removed, and every note, including a shortfall. Ask the person to review it on the plan and choose Apply or Discard. You cannot apply a proposal or restore a version.
 - A proposal goes stale when the plan changes after it. If `view-screen` shows `pendingProposal.stale`, say so and offer to generate a new one.
 

@@ -22,6 +22,7 @@ export const PlanReport = z.object({
   rows: z.number().int().min(0),
   params: z.object({
     pitchMm: z.number().int(),
+    slotMm: z.number().int(),
     aisleMm: z.number().int(),
     blocks: z.union([z.literal(2), z.literal(3)]),
     unitsPerBlock: z.number().int(),

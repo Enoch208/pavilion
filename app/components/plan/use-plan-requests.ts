@@ -43,13 +43,18 @@ export function usePlanRequests(
   return {
     proposing: propose.isPending,
     deciding: apply.isPending || discard.isPending || propose.isPending,
-    propose(input: { attendeeTarget: number; minAisleMm: number }) {
+    propose(input: {
+      mode: "theatre" | "banquet";
+      attendeeTarget: number;
+      minAisleMm: number;
+    }) {
       if (planId) propose.mutate({ planId, ...input });
     },
     regenerate(proposal: ProposalView) {
       if (!planId) return;
       propose.mutate({
         planId,
+        mode: proposal.mode,
         attendeeTarget: proposal.attendeeTarget,
         minAisleMm: proposal.minAisleMm,
       });

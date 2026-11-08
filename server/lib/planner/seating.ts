@@ -1,12 +1,8 @@
-import {
-  footprint,
-  rectsOverlap,
-  type Rect,
-} from "../../../shared/geometry/index.js";
+import { rectsOverlap, type Rect } from "../../../shared/geometry/index.js";
 import type { Seat, SeatingContext, SeatingParams } from "./types.js";
 
 function blockStarts(context: SeatingContext, params: SeatingParams): number[] {
-  const width = params.unitsPerBlock * context.unitWidthMm;
+  const width = params.unitsPerBlock * params.slotMm;
   const centre = context.centreXMm;
   if (params.blocks === 2) {
     return [
@@ -22,14 +18,20 @@ function blockStarts(context: SeatingContext, params: SeatingParams): number[] {
   ];
 }
 
-function seatRect(context: SeatingContext, xMm: number, yMm: number): Rect {
-  return footprint({
-    xMm,
-    yMm,
-    widthMm: context.unitWidthMm,
-    heightMm: context.unitDepthMm,
-    rotationDeg: 0,
-  });
+function serviceArea(
+  context: SeatingContext,
+  slotX: number,
+  slotMm: number,
+  y: number,
+): Rect {
+  const { unit } = context;
+  const width = unit.widthMm + unit.ringMm * 2;
+  return {
+    x: Math.round(slotX + (slotMm - width) / 2),
+    y,
+    width,
+    height: unit.depthMm + unit.ringMm * 2,
+  };
 }
 
 function fits(context: SeatingContext, rect: Rect): boolean {
@@ -45,10 +47,11 @@ export function candidateRows(
   context: SeatingContext,
   params: SeatingParams,
 ): Seat[][] {
+  const { unit } = context;
   const starts = blockStarts(context, params);
+  const serviceDepth = unit.depthMm + unit.ringMm * 2;
+  const lastY = context.venue.heightMm - context.minAisleMm - serviceDepth;
   const rows: Seat[][] = [];
-  const lastY =
-    context.venue.heightMm - context.minAisleMm - context.unitDepthMm;
   for (
     let y = context.firstRowYMm, row = 0;
     y <= lastY;
@@ -56,10 +59,20 @@ export function candidateRows(
   ) {
     const seats: Seat[] = [];
     for (const start of starts) {
-      for (let unit = 0; unit < params.unitsPerBlock; unit += 1) {
-        const x = start + unit * context.unitWidthMm;
-        if (fits(context, seatRect(context, x, y)))
-          seats.push({ xMm: x, yMm: y, row });
+      for (let slot = 0; slot < params.unitsPerBlock; slot += 1) {
+        const area = serviceArea(
+          context,
+          start + slot * params.slotMm,
+          params.slotMm,
+          y,
+        );
+        if (fits(context, area)) {
+          seats.push({
+            xMm: area.x + unit.ringMm,
+            yMm: area.y + unit.ringMm,
+            row,
+          });
+        }
       }
     }
     if (seats.length > 0) rows.push(seats);
@@ -70,11 +83,10 @@ export function candidateRows(
 function closestToCentre(
   seats: Seat[],
   count: number,
-  centreXMm: number,
-  unitWidthMm: number,
+  context: SeatingContext,
 ) {
   const distance = (seat: Seat) =>
-    Math.abs(seat.xMm + unitWidthMm / 2 - centreXMm);
+    Math.abs(seat.xMm + context.unit.widthMm / 2 - context.centreXMm);
   return [...seats]
     .sort((a, b) => distance(a) - distance(b) || a.xMm - b.xMm)
     .slice(0, count);
@@ -91,14 +103,7 @@ export function fillRows(
   for (const row of rows) {
     if (remaining <= 0) break;
     const take =
-      row.length <= remaining
-        ? row
-        : closestToCentre(
-            row,
-            remaining,
-            context.centreXMm,
-            context.unitWidthMm,
-          );
+      row.length <= remaining ? row : closestToCentre(row, remaining, context);
     chosen.push(...take);
     remaining -= take.length;
   }

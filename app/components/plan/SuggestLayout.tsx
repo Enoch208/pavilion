@@ -12,20 +12,59 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 import { metres, parseMetres } from "./format";
+
+type Mode = "theatre" | "banquet";
 
 type Props = {
   view: LayoutView;
   busy: boolean;
-  onPropose: (input: { attendeeTarget: number; minAisleMm: number }) => void;
+  onPropose: (input: {
+    mode: Mode;
+    attendeeTarget: number;
+    minAisleMm: number;
+  }) => void;
 };
+
+function ModeChoice(props: { mode: Mode; onChange: (mode: Mode) => void }) {
+  const t = useT();
+  const option = (mode: Mode) => (
+    <button
+      type="button"
+      aria-pressed={props.mode === mode}
+      onClick={() => props.onChange(mode)}
+      className={cn(
+        "flex-1 rounded px-2 py-1 text-xs",
+        props.mode === mode
+          ? "bg-background font-medium shadow-sm"
+          : "text-muted-foreground hover:text-foreground",
+      )}
+    >
+      {mode === "banquet" ? t("proposal.banquet") : t("proposal.theatre")}
+    </button>
+  );
+  return (
+    <div
+      role="group"
+      aria-label={t("proposal.style")}
+      className="flex rounded-md bg-muted p-0.5"
+    >
+      {option("theatre")}
+      {option("banquet")}
+    </div>
+  );
+}
 
 export function SuggestLayout({ view, busy, onPropose }: Props) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const [guests, setGuests] = useState(String(view.event.attendeeTarget));
   const [aisle, setAisle] = useState(metres(view.plan.minAisleMm));
+  const [mode, setMode] = useState<Mode>(
+    view.plan.mode === "banquet" ? "banquet" : "theatre",
+  );
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,7 +78,7 @@ export function SuggestLayout({ view, busy, onPropose }: Props) {
       toast.error(t("plan.invalidNumber"));
       return;
     }
-    onPropose({ attendeeTarget, minAisleMm });
+    onPropose({ mode, attendeeTarget, minAisleMm });
     setOpen(false);
   }
 
@@ -53,6 +92,7 @@ export function SuggestLayout({ view, busy, onPropose }: Props) {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64">
         <form onSubmit={submit} className="space-y-3">
+          <ModeChoice mode={mode} onChange={setMode} />
           <div className="space-y-1">
             <Label htmlFor="suggest-guests">{t("proposal.guests")}</Label>
             <Input

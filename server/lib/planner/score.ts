@@ -8,9 +8,14 @@ export const SCORE_WEIGHTS = {
   preservation: 0.1,
 } as const;
 
-const TIGHTEST_PITCH_MM = 850;
-const PITCH_RANGE_MM = 150;
 const AISLE_HEADROOM_MM = 500;
+
+export type PitchRange = { tightestMm: number; roomiestMm: number };
+
+function pitchRoominess(pitchMm: number, range: PitchRange): number {
+  const span = range.roomiestMm - range.tightestMm;
+  return span <= 0 ? 1 : clamp((pitchMm - range.tightestMm) / span);
+}
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -18,6 +23,7 @@ export type ScoreInput = {
   seats: number;
   attendeeTarget: number;
   params: SeatingParams;
+  pitchRange: PitchRange;
   minAisleMm: number;
   costCents: number;
   budgetCents: number;
@@ -31,7 +37,7 @@ export function scoreCandidate(input: ScoreInput): number {
     input.attendeeTarget === 0 ? 1 : clamp(input.seats / input.attendeeTarget);
   const circulation =
     0.5 * clamp(input.params.aisleMm / (input.minAisleMm + AISLE_HEADROOM_MM)) +
-    0.5 * clamp((input.params.pitchMm - TIGHTEST_PITCH_MM) / PITCH_RANGE_MM);
+    0.5 * pitchRoominess(input.params.pitchMm, input.pitchRange);
   const cost =
     input.costCents <= input.budgetCents
       ? 1

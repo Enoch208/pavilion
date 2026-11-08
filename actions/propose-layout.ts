@@ -16,9 +16,11 @@ export default defineAction({
       .max(64)
       .describe("Layout plan id from get-layout or view-screen"),
     mode: z
-      .enum(["theatre"])
+      .enum(["theatre", "banquet"])
       .optional()
-      .describe("Seating style; theatre rows"),
+      .describe(
+        "Seating style: theatre rows of chairs, or banquet round tables of 8. Defaults to the plan's current mode",
+      ),
     attendeeTarget: z.coerce
       .number()
       .int()

@@ -17,18 +17,20 @@ export type Seat = { xMm: number; yMm: number; row: number };
 
 export type SeatingParams = {
   pitchMm: number;
+  slotMm: number;
   aisleMm: number;
   blocks: 2 | 3;
   unitsPerBlock: number;
 };
+
+export type SeatingUnit = { widthMm: number; depthMm: number; ringMm: number };
 
 export type SeatingContext = {
   venue: VenueSize;
   minAisleMm: number;
   centreXMm: number;
   firstRowYMm: number;
-  unitWidthMm: number;
-  unitDepthMm: number;
+  unit: SeatingUnit;
   blocked: readonly Rect[];
 };
 
