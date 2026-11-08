@@ -133,46 +133,50 @@ export function FloorPlanPage({ eventId }: { eventId: string }) {
           onRegenerate={() => requests.regenerate(proposal)}
         />
       ) : null}
-      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[15rem_minmax(0,1fr)_17rem] lg:overflow-hidden">
-        <aside className="order-2 border-t border-border lg:order-1 lg:overflow-y-auto lg:border-r lg:border-t-0">
-          <CatalogPanel
-            currency={layout.event.currency}
-            adding={edits.adding || reviewing}
-            onAdd={(id) => edits.addItem(id, setSelectedIds)}
-          />
-        </aside>
-        <div className="order-1 min-h-[22rem] p-3 lg:order-2">
-          <FloorPlanCanvas
-            view={layout}
-            review={review}
-            selectedIds={selectedIds}
-            onSelect={setSelectedIds}
-            onDrop={tryMove}
-            onLockedDrag={(name) => toast.error(t("plan.lockedMove", { name }))}
-            onKeyDown={onKeyDown}
-          />
-        </div>
-        <aside className="order-3 border-t border-border lg:overflow-y-auto lg:border-l lg:border-t-0">
-          {reviewing ? (
-            <p className="p-3 text-sm text-muted-foreground">
-              {t("proposal.reviewHint")}
-            </p>
-          ) : (
-            <InspectorPanel
-              selected={selected}
-              currency={layout.event.currency}
-              onMove={tryMove}
-              onUpdate={edits.updateObject}
-              onLock={(ids, locked) =>
-                setLocked(
-                  selected.filter((object) => ids.includes(object.id)),
-                  locked,
-                )
+      <div className="@container min-h-0 flex-1">
+        <div className="grid h-full grid-cols-1 overflow-y-auto @2xl:grid-cols-[minmax(0,1fr)_16rem] @2xl:grid-rows-[minmax(0,auto)_minmax(0,1fr)] @2xl:overflow-hidden">
+          <div className="min-h-[22rem] p-3 @2xl:row-span-2">
+            <FloorPlanCanvas
+              view={layout}
+              review={review}
+              selectedIds={selectedIds}
+              onSelect={setSelectedIds}
+              onDrop={tryMove}
+              onLockedDrag={(name) =>
+                toast.error(t("plan.lockedMove", { name }))
               }
-              onRemove={setPendingRemove}
+              onKeyDown={onKeyDown}
             />
-          )}
-        </aside>
+          </div>
+          <aside className="border-t border-border @2xl:overflow-y-auto @2xl:border-l @2xl:border-t-0">
+            {reviewing ? (
+              <p className="p-3 text-sm text-muted-foreground">
+                {t("proposal.reviewHint")}
+              </p>
+            ) : (
+              <InspectorPanel
+                selected={selected}
+                currency={layout.event.currency}
+                onMove={tryMove}
+                onUpdate={edits.updateObject}
+                onLock={(ids, locked) =>
+                  setLocked(
+                    selected.filter((object) => ids.includes(object.id)),
+                    locked,
+                  )
+                }
+                onRemove={setPendingRemove}
+              />
+            )}
+          </aside>
+          <aside className="border-t border-border @2xl:overflow-y-auto @2xl:border-l">
+            <CatalogPanel
+              currency={layout.event.currency}
+              adding={edits.adding || reviewing}
+              onAdd={(id) => edits.addItem(id, setSelectedIds)}
+            />
+          </aside>
+        </div>
       </div>
       <RemoveDialog
         ids={pendingRemove}

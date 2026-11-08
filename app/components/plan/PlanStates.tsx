@@ -5,10 +5,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function PlanSkeleton() {
   return (
-    <div className="grid h-full grid-cols-1 gap-3 p-3 lg:grid-cols-[15rem_minmax(0,1fr)_17rem]">
-      <Skeleton className="hidden rounded-lg lg:block" />
-      <Skeleton className="min-h-[22rem] rounded-lg" />
-      <Skeleton className="hidden rounded-lg lg:block" />
+    <div className="@container h-full">
+      <div className="grid h-full grid-cols-1 gap-3 p-3 @2xl:grid-cols-[minmax(0,1fr)_16rem]">
+        <Skeleton className="min-h-[22rem] rounded-lg" />
+        <Skeleton className="hidden rounded-lg @2xl:block" />
+      </div>
     </div>
   );
 }

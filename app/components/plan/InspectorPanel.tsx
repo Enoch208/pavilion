@@ -76,7 +76,7 @@ function SingleObject(props: Props & { object: PlacedObject }) {
           : t("plan.noCost")}
         {object.locked ? ` · ${t("plan.locked")}` : ""}
       </p>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 items-end gap-2">
         <MetreField
           id="object-x"
           label={t("plan.fromWest")}
