@@ -5,8 +5,9 @@ import { and, eq } from "drizzle-orm";
 import { getDb, schema, type Tx } from "../../db/index.js";
 import { reject } from "../errors.js";
 import { recordChange } from "../layout/commit.js";
-import { requirePlan } from "../layout/load.js";
+import { loadObjects, requirePlan } from "../layout/load.js";
 import type { PlanRow } from "../layout/records.js";
+import { saveVersion } from "../layout/snapshot.js";
 import type { Scope } from "../scope.js";
 import { NOVA, novaObjects } from "./nova.js";
 
@@ -34,6 +35,25 @@ async function placeSeedObjects(tx: Tx, scope: Scope, plan: PlanRow) {
   }));
   await tx.insert(schema.placedObjects).values(objects);
   return objects.length;
+}
+
+async function saveSeedVersion(
+  tx: Tx,
+  scope: Scope,
+  planId: string,
+  version: number,
+) {
+  await saveVersion(tx, scope, {
+    planId,
+    version,
+    reason: "Seeded layout",
+    state: {
+      objects: await loadObjects(tx, scope, planId),
+      attendeeTarget: NOVA.attendeeTarget,
+      mode: NOVA.mode,
+      minAisleMm: NOVA.minAisleMm,
+    },
+  });
 }
 
 export async function ensureDemoEvent(scope: Scope) {
@@ -76,11 +96,12 @@ export async function ensureDemoEvent(scope: Scope) {
       })
       .returning();
     const count = await placeSeedObjects(tx, scope, plan!);
-    await recordChange(tx, scope, plan!, {
+    const version = await recordChange(tx, scope, plan!, {
       action: "start-demo",
       summary: `Seeded ${NOVA.title} with ${count} objects`,
       payload: { demoKey: NOVA.demoKey },
     });
+    await saveSeedVersion(tx, scope, plan!.id, version);
     return { eventId, created: true };
   });
 }
@@ -114,11 +135,21 @@ export async function resetDemoEvent(scope: Scope) {
         ),
       );
     const count = await placeSeedObjects(tx, scope, plan);
-    await recordChange(tx, scope, plan, {
+    await tx
+      .update(schema.layoutPlans)
+      .set({ mode: NOVA.mode, minAisleMm: NOVA.minAisleMm })
+      .where(
+        and(
+          eq(schema.layoutPlans.id, plan.id),
+          eq(schema.layoutPlans.ownerEmail, scope.ownerEmail),
+        ),
+      );
+    const version = await recordChange(tx, scope, plan, {
       action: "reset-demo",
       summary: `Reset ${NOVA.title} to its ${count} seeded objects`,
       payload: { demoKey: NOVA.demoKey },
     });
+    await saveSeedVersion(tx, scope, plan.id, version);
     return { eventId: existing.eventId, created: false };
   });
 }

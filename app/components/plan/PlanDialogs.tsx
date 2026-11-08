@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-function Confirm(props: {
+export function ConfirmDialog(props: {
   open: boolean;
   title: string;
   description: string;
@@ -53,7 +53,7 @@ export function RemoveDialog(props: {
 }) {
   const t = useT();
   return (
-    <Confirm
+    <ConfirmDialog
       open={props.ids.length > 0}
       title={t("plan.removeTitle", { count: props.ids.length })}
       description={t("plan.removeDescription")}
@@ -71,7 +71,7 @@ export function ResetDialog(props: {
 }) {
   const t = useT();
   return (
-    <Confirm
+    <ConfirmDialog
       open={props.open}
       title={t("plan.resetTitle")}
       description={t("plan.resetDescription")}

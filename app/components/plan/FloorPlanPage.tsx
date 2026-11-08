@@ -7,34 +7,23 @@ import type { PlacedObject } from "@shared/contracts/layout";
 import type { LayoutView } from "@shared/contracts/view";
 import { diffLayouts } from "@shared/layout/diff";
 import { useState } from "react";
-import { Link } from "react-router";
 import { toast } from "sonner";
-
-import { Skeleton } from "@/components/ui/skeleton";
 
 import { CatalogPanel } from "./CatalogPanel";
 import { FloorPlanCanvas } from "./FloorPlanCanvas";
+import { HistoryPopover } from "./HistoryPopover";
 import { InspectorPanel } from "./InspectorPanel";
 import type { Move } from "./optimistic";
 import { checkMoves } from "./plan-guards";
 import { planKeyHandler } from "./plan-keys";
 import { RemoveDialog, ResetDialog } from "./PlanDialogs";
 import { PlanHeader } from "./PlanHeader";
+import { PlanNotFound, PlanSkeleton } from "./PlanStates";
 import { ProposalBar } from "./ProposalBar";
 import { SuggestLayout } from "./SuggestLayout";
 import { useLayoutEdits } from "./use-layout-edits";
 import { usePlanRequests } from "./use-plan-requests";
 import { usePlanSelection } from "./use-plan-selection";
-
-function PlanSkeleton() {
-  return (
-    <div className="grid h-full grid-cols-1 gap-3 p-3 lg:grid-cols-[15rem_minmax(0,1fr)_17rem]">
-      <Skeleton className="hidden rounded-lg lg:block" />
-      <Skeleton className="min-h-[22rem] rounded-lg" />
-      <Skeleton className="hidden rounded-lg lg:block" />
-    </div>
-  );
-}
 
 export function FloorPlanPage({ eventId }: { eventId: string }) {
   const t = useT();
@@ -54,18 +43,7 @@ export function FloorPlanPage({ eventId }: { eventId: string }) {
   const [showCurrentFor, setShowCurrentFor] = useState<string | null>(null);
 
   if (isPending) return <PlanSkeleton />;
-  if (!view) {
-    return (
-      <main className="p-6 text-sm">
-        <p className="text-muted-foreground">
-          {actionErrorMessage(error) ?? t("plan.notFound")}
-        </p>
-        <Link className="mt-3 inline-block underline" to="/events">
-          {t("plan.backToEvents")}
-        </Link>
-      </main>
-    );
-  }
+  if (!view) return <PlanNotFound message={actionErrorMessage(error)} />;
   const layout: LayoutView = view;
   const { proposal } = layout;
   const reviewing = proposal !== null && showCurrentFor !== proposal.id;
@@ -120,11 +98,17 @@ export function FloorPlanPage({ eventId }: { eventId: string }) {
         view={layout}
         onReset={() => setResetOpen(true)}
         actions={
-          <SuggestLayout
-            view={layout}
-            busy={requests.proposing}
-            onPropose={requests.propose}
-          />
+          <>
+            <HistoryPopover
+              view={layout}
+              onRestored={() => setSelectedIds([])}
+            />
+            <SuggestLayout
+              view={layout}
+              busy={requests.proposing}
+              onPropose={requests.propose}
+            />
+          </>
         }
       />
       {proposal ? (

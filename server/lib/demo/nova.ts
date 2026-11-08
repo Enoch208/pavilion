@@ -12,6 +12,7 @@ export const NOVA = {
   budgetCents: 400_000,
   venue: { name: "Main hall", widthMm: 18_000, heightMm: 12_000 },
   mode: "theatre",
+  minAisleMm: 1_200,
 } as const;
 
 const ROWS = ["A", "B", "C", "D", "E", "F"] as const;

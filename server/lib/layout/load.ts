@@ -11,9 +11,10 @@ export async function requirePlan(
   db: DbLike,
   scope: Scope,
   planId: string,
+  options: { lock: boolean } = { lock: true },
 ): Promise<{ plan: PlanRow; venue: VenueRow }> {
   const { layoutPlans, venues } = schema;
-  const [plan] = await db
+  const query = db
     .select()
     .from(layoutPlans)
     .where(
@@ -21,8 +22,8 @@ export async function requirePlan(
         eq(layoutPlans.id, planId),
         eq(layoutPlans.ownerEmail, scope.ownerEmail),
       ),
-    )
-    .for("update");
+    );
+  const [plan] = options.lock ? await query.for("update") : await query;
   if (!plan) reject("NOT_FOUND", "That layout plan does not exist.");
   const [venue] = await db
     .select()

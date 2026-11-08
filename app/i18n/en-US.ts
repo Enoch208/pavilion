@@ -155,6 +155,20 @@ const messages = {
     invalidGuests: "Enter a whole number of guests.",
     reviewHint: "Reviewing the proposal. Switch to Current to edit the plan.",
   },
+  history: {
+    open: "History",
+    empty:
+      "No saved layouts yet. Applying a proposal saves the layout before and after.",
+    current: "Current",
+    restore: "Restore",
+    restoreLabel: "Restore version {{version}}",
+    restoreTitle: "Restore version {{version}}?",
+    restoreDescription:
+      "The current layout is saved first, so you can come back to it.",
+    restored:
+      "Restored version {{restored}}. The plan is now version {{version}}.",
+    seats: "{{count}} seats",
+  },
   navigation: {
     chat: "Chat",
     collapseSidebar: "Collapse sidebar",
