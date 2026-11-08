@@ -9,6 +9,8 @@ import { diffLayouts } from "@shared/layout/diff";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { ExportButton } from "@/components/pack/ExportButton";
+
 import { CatalogPanel } from "./CatalogPanel";
 import { FloorPlanCanvas } from "./FloorPlanCanvas";
 import { HistoryPopover } from "./HistoryPopover";
@@ -107,6 +109,12 @@ export function FloorPlanPage({ eventId }: { eventId: string }) {
               view={layout}
               busy={requests.proposing}
               onPropose={requests.propose}
+            />
+            <ExportButton
+              planId={layout.plan.id}
+              version={layout.plan.version}
+              label="export"
+              variant="ghost"
             />
           </>
         }

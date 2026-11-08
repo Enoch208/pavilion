@@ -17,17 +17,22 @@ Pavilion is a spatial event planner. A person and the agent edit one floor plan 
 - Then report from the returned proposal: seats before and after, cost before and after, how many objects are added, moved and removed, and every note, including a shortfall. Ask the person to review it on the plan and choose Apply or Discard. You cannot apply a proposal or restore a version.
 - A proposal goes stale when the plan changes after it. If `view-screen` shows `pendingProposal.stale`, say so and offer to generate a new one.
 
-| Action         | Use                                                                         |
-| -------------- | --------------------------------------------------------------------------- |
-| view-screen    | Open event, plan version and verified selection; call before "this"/"these" |
-| list-events    | The person's events                                                         |
-| get-layout     | Venue, objects, seats, cost, issues, version                                |
-| get-catalog    | Placeable items: footprint, seats, example price                            |
-| add-objects    | Place catalog items; omit x/y for the free spot nearest the centre          |
-| move-objects   | Move objects                                                                |
-| update-object  | Label, size, rotation, seats, unit cost                                     |
-| lock-objects   | Lock or unlock                                                              |
-| remove-objects | Remove objects                                                              |
+### Setup packs
+
+- When the person wants the plan for a crew, a venue or printing, call `export-setup-pack` with `planId`. It freezes the current version into a pack (scaled floor plan as SVG or PNG, item list, seating rows, placements) without changing the plan. Give the person its `path` (or `navigate` with view "pack", `eventId` and `packId`) and quote the item list from the result.
+
+| Action            | Use                                                                         |
+| ----------------- | --------------------------------------------------------------------------- |
+| view-screen       | Open event, plan version and verified selection; call before "this"/"these" |
+| list-events       | The person's events                                                         |
+| get-layout        | Venue, objects, seats, cost, issues, version                                |
+| get-catalog       | Placeable items: footprint, seats, example price                            |
+| add-objects       | Place catalog items; omit x/y for the free spot nearest the centre          |
+| move-objects      | Move objects                                                                |
+| update-object     | Label, size, rotation, seats, unit cost                                     |
+| lock-objects      | Lock or unlock                                                              |
+| remove-objects    | Remove objects                                                              |
+| export-setup-pack | Freeze the plan into a printable setup pack; returns its path and item list |
 
 ## Core rules
 
@@ -40,7 +45,7 @@ For custom branding, keep `server/plugins/agent-native-email-branding.ts` aligne
 
 ## Application state
 
-- `navigation` describes the view and selected ids: `events` at `/events`, `event` at `/events/<eventId>` with `eventId`, `chat` at `/chat` and `/chat/<threadId>`.
+- `navigation` describes the view and selected ids: `events` at `/events`, `event` at `/events/<eventId>` with `eventId`, `pack` at `/events/<eventId>/packs/<packId>` with `packId`, `chat` at `/chat` and `/chat/<threadId>`.
 - `selection` holds the object ids selected on the floor plan; `view-screen` returns them verified, with labels and positions.
 - Use `navigate` (`--view event --eventId <id>`) to open a floor plan and `view-screen` for a fresh read.
 

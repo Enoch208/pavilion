@@ -19,6 +19,7 @@ export interface NavigationState {
   publicPath?: string;
   threadId?: string;
   eventId?: string;
+  packId?: string;
 }
 
 export const EVENTS_PATH = "/events";
@@ -26,6 +27,15 @@ export const EVENTS_PATH = "/events";
 function eventIdFromPath(pathname: string): string | undefined {
   const match = pathname.match(/^\/events\/([^/?#]+)/);
   return match?.[1] ? decodeURIComponent(match[1]) : undefined;
+}
+
+function packIdFromPath(pathname: string): string | undefined {
+  const match = pathname.match(/^\/events\/[^/?#]+\/packs\/([^/?#]+)/);
+  return match?.[1] ? decodeURIComponent(match[1]) : undefined;
+}
+
+export function packPath(eventId: string, packId: string): string {
+  return `${EVENTS_PATH}/${encodeURIComponent(eventId)}/packs/${encodeURIComponent(packId)}`;
 }
 
 export function useNavigationState() {
@@ -73,16 +83,19 @@ function matchesPathPrefix(pathname: string, prefix: string): boolean {
 export function navigationStateForPath(pathname: string): NavigationState {
   const threadId = threadIdFromPath(pathname);
   const eventId = eventIdFromPath(pathname);
+  const packId = packIdFromPath(pathname);
   return {
     view: viewForPath(pathname),
     path: pathname,
     publicPath: appPathFromLocalRoute(pathname),
     ...(threadId ? { threadId } : {}),
     ...(eventId ? { eventId } : {}),
+    ...(packId ? { packId } : {}),
   };
 }
 
 function viewForPath(pathname: string): string {
+  if (packIdFromPath(pathname)) return "pack";
   if (eventIdFromPath(pathname)) return "event";
   if (pathname === EVENTS_PATH) return "events";
   if (isChatPathname(pathname)) return "chat";
@@ -129,6 +142,11 @@ export function pathForCommand(
 ): string {
   const eventId =
     typeof command?.eventId === "string" ? command.eventId.trim() : "";
+  const packId =
+    typeof command?.packId === "string" ? command.packId.trim() : "";
+  if (command?.view === "pack" && eventId && packId) {
+    return packPath(eventId, packId);
+  }
   if (command?.view === "event" && eventId) {
     return `${EVENTS_PATH}/${encodeURIComponent(eventId)}`;
   }

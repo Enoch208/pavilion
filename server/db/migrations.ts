@@ -116,4 +116,21 @@ CREATE TABLE IF NOT EXISTS pv_layout_versions (
 CREATE INDEX IF NOT EXISTS pv_layout_versions_plan_created_idx ON pv_layout_versions (plan_id, created_at);
 `,
   },
+  {
+    version: 3,
+    name: "pavilion_setup_packs_v3",
+    sql: `
+CREATE TABLE IF NOT EXISTS pv_setup_packs (
+  id TEXT PRIMARY KEY,
+  plan_id TEXT NOT NULL REFERENCES pv_layout_plans(id) ON DELETE CASCADE,
+  event_id TEXT NOT NULL REFERENCES pv_events(id) ON DELETE CASCADE,
+  owner_email TEXT NOT NULL,
+  version INTEGER NOT NULL CHECK (version >= 0),
+  source JSONB NOT NULL,
+  created_by TEXT NOT NULL CHECK (created_by IN ('human', 'agent', 'system')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS pv_setup_packs_owner_plan_created_idx ON pv_setup_packs (owner_email, plan_id, created_at);
+`,
+  },
 ];

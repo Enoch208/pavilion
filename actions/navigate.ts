@@ -12,7 +12,11 @@ export default defineAction({
     eventId: z
       .string()
       .optional()
-      .describe('Event ID to open with view "event"'),
+      .describe('Event ID to open with view "event" or "pack"'),
+    packId: z
+      .string()
+      .optional()
+      .describe('Setup pack ID to open with view "pack" and its eventId'),
   }),
   http: false,
   run: async (args) => {
@@ -24,6 +28,7 @@ export default defineAction({
     if (args.path) nav.path = args.path;
     if (args.threadId) nav.threadId = args.threadId;
     if (args.eventId) nav.eventId = args.eventId;
+    if (args.packId) nav.packId = args.packId;
     nav._writeId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     await writeAppStateForCurrentTab("navigate", nav);
     return `Navigating to ${args.view || args.path}`;

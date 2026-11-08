@@ -126,3 +126,16 @@ export const layoutVersions = pgTable("pv_layout_versions", {
   minAisleMm: integer("min_aisle_mm").notNull(),
   createdAt: instant("created_at").notNull().defaultNow(),
 });
+
+export const setupPacks = pgTable("pv_setup_packs", {
+  id: text("id").primaryKey(),
+  planId: text("plan_id").notNull(),
+  eventId: text("event_id").notNull(),
+  ownerEmail: text("owner_email").notNull(),
+  version: integer("version").notNull(),
+  source: jsonb("source").$type<Record<string, unknown>>().notNull(),
+  createdBy: text("created_by", {
+    enum: ["human", "agent", "system"],
+  }).notNull(),
+  createdAt: instant("created_at").notNull().defaultNow(),
+});
