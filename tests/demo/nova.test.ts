@@ -1,9 +1,8 @@
 import { collisionFor } from "@shared/catalog";
+import { NOVA, novaObjects } from "@shared/demo/nova";
 import { findIssues, footprint } from "@shared/geometry";
 import { summarizeLayout } from "@shared/layout/summary";
 import { describe, expect, it } from "vitest";
-
-import { NOVA, novaObjects } from "../../server/lib/demo/nova";
 
 const objects = novaObjects();
 const shapes = objects.map((object, index) => ({

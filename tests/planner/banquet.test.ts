@@ -1,9 +1,9 @@
 import type { PlacedObject } from "@shared/contracts/layout";
+import { NOVA, novaObjects } from "@shared/demo/nova";
 import { findIssues, footprint, rectsOverlap } from "@shared/geometry";
 import { toShape } from "@shared/layout/shape";
 import { describe, expect, it } from "vitest";
 
-import { NOVA, novaObjects } from "../../server/lib/demo/nova";
 import { BANQUET_CHAIR_RING_MM } from "../../server/lib/planner/context";
 import { planLayout } from "../../server/lib/planner/plan";
 

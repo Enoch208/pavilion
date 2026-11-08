@@ -1,7 +1,6 @@
 import type { PackSource } from "@shared/contracts/export";
 import type { PlacedObject } from "@shared/contracts/layout";
-
-import { NOVA, novaObjects } from "../../server/lib/demo/nova";
+import { NOVA, novaObjects } from "@shared/demo/nova";
 
 export function novaSource(
   change: (objects: PlacedObject[]) => PlacedObject[] = (objects) => objects,

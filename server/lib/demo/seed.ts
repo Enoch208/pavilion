@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { and, eq } from "drizzle-orm";
 
+import { NOVA, novaObjects } from "../../../shared/demo/nova.js";
 import { getDb, schema, type Tx } from "../../db/index.js";
 import { reject } from "../errors.js";
 import { recordChange } from "../layout/commit.js";
@@ -9,7 +10,6 @@ import { loadObjects, requirePlan } from "../layout/load.js";
 import type { PlanRow } from "../layout/records.js";
 import { saveVersion } from "../layout/snapshot.js";
 import type { Scope } from "../scope.js";
-import { NOVA, novaObjects } from "./nova.js";
 
 async function findDemoEvent(db: Tx | ReturnType<typeof getDb>, scope: Scope) {
   const { events, layoutPlans } = schema;

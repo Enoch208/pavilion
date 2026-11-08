@@ -1,5 +1,5 @@
-import { catalogItem } from "../../../shared/catalog.js";
-import type { PlacedObject } from "../../../shared/contracts/layout.js";
+import { catalogItem } from "../catalog.js";
+import type { PlacedObject } from "../contracts/layout.js";
 
 export type ObjectDraft = Omit<PlacedObject, "id">;
 
