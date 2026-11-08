@@ -1,18 +1,20 @@
 import { configureTracking } from "@agent-native/core/client/analytics";
 import { appPath } from "@agent-native/core/client/api-path";
-import { useDbSync } from "@agent-native/core/client/hooks";
+import { useDbSync, useSession } from "@agent-native/core/client/hooks";
 import { createAgentNativeQueryClient } from "@agent-native/core/client/hooks";
 import { getLocaleInitScript, useT } from "@agent-native/core/client/i18n";
 import { getThemeInitScript } from "@agent-native/core/client/theme";
 import { AppProviders } from "@agent-native/toolkit/app/providers";
 import { useCommandMenuShortcut } from "@agent-native/toolkit/app/shared";
 import { CommandMenu } from "@agent-native/toolkit/app/shared";
+import { isGuestBlockedPath, isGuestEmail } from "@shared/guest";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useCallback, useState } from "react";
 import {
   Links,
   Meta,
+  Navigate,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -23,7 +25,7 @@ import type { LinksFunction } from "react-router";
 
 import { Layout as AppLayout } from "@/components/layout/Layout";
 import { AppToolkitProvider } from "@/components/ui/toolkit-provider";
-import { useNavigationState } from "@/hooks/use-navigation-state";
+import { EVENTS_PATH, useNavigationState } from "@/hooks/use-navigation-state";
 import { APP_TITLE } from "@/lib/app-config";
 import {
   HOME_PATH,
@@ -122,7 +124,11 @@ function AppContent() {
   const t = useT();
   const location = useLocation();
   const isChatThread = threadIdFromPath(location.pathname) !== null;
+  const guest = isGuestEmail(useSession().session?.email);
   useCommandMenuShortcut(useCallback(() => setCmdkOpen(true), []));
+  if (guest && isGuestBlockedPath(location.pathname)) {
+    return <Navigate to={EVENTS_PATH} replace />;
+  }
   return (
     <>
       <CommandMenu
@@ -140,7 +146,7 @@ function AppContent() {
               {t("chat.newChat")}
             </CommandMenu.Item>
           ) : null}
-          {location.pathname !== HOME_PATH ? (
+          {!guest && location.pathname !== HOME_PATH ? (
             <CommandMenu.Item onSelect={() => navigate(HOME_PATH)}>
               {t("navigation.home")}
             </CommandMenu.Item>
@@ -150,19 +156,21 @@ function AppContent() {
               {t("navigation.chat")}
             </CommandMenu.Item>
           ) : null}
-          <CommandMenu.Item
-            onSelect={() => navigate("/settings/agent")}
-            keywords={[
-              "agent",
-              "context",
-              "files",
-              "connections",
-              "jobs",
-              "access",
-            ]}
-          >
-            {t("settings.openAgentSettings")}
-          </CommandMenu.Item>
+          {guest ? null : (
+            <CommandMenu.Item
+              onSelect={() => navigate("/settings/agent")}
+              keywords={[
+                "agent",
+                "context",
+                "files",
+                "connections",
+                "jobs",
+                "access",
+              ]}
+            >
+              {t("settings.openAgentSettings")}
+            </CommandMenu.Item>
+          )}
         </CommandMenu.Group>
         <CommandMenu.Group heading={t("root.commandAppearance")}>
           <ThemeToggleItem />
@@ -177,18 +185,24 @@ function AppContent() {
 
 export default function Root() {
   const [queryClient] = useState(() => createAgentNativeQueryClient());
-  // The path, not the visitor, picks the shell, so the SSR shell stays one
-  // cached page per URL.
   const { pathname } = useLocation();
+  const isLanding = pathname === "/";
   return (
     <AppToolkitProvider>
       <AppProviders
         queryClient={queryClient}
+        isPublicPath={isLanding}
         skeletonLayout={skeletonLayoutForPath(pathname)}
         i18n={{ catalog: i18nCatalog }}
       >
-        <DbSyncSetup />
-        <AppContent />
+        {isLanding ? (
+          <Outlet />
+        ) : (
+          <>
+            <DbSyncSetup />
+            <AppContent />
+          </>
+        )}
       </AppProviders>
     </AppToolkitProvider>
   );

@@ -4,6 +4,9 @@
     "firstRun": "off"
   },
   "doctor": {
-    "failOnBuild": false
+    "failOnBuild": false,
+    "dbToolScopingDenylist": {
+      "pv_rate_events": "Deployment-wide rate-limit ledger of hashed IP and account keys with no event data; written only by server code, never read by agent tools. Reviewed 2026-11-08."
+    }
   }
 }

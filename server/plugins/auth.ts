@@ -2,6 +2,7 @@ import { createToolkitAuthPlugin } from "@agent-native/toolkit/app/auth/server";
 
 export default createToolkitAuthPlugin({
   workspaceAppPublicPaths: ["/"],
-  rootAuth: true,
+  publicPaths: ["/api/demo/start"],
+  rootAuth: false,
   marketing: false,
 });

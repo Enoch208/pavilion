@@ -1,4 +1,5 @@
 import { appPath } from "@agent-native/core/client/api-path";
+import { useSession } from "@agent-native/core/client/hooks";
 import { useT } from "@agent-native/core/client/i18n";
 import {
   navigateWithAgentChatViewTransition,
@@ -13,6 +14,7 @@ import {
 import { OrgSwitcher } from "@agent-native/toolkit/app/org";
 import { openCommandMenu } from "@agent-native/toolkit/app/shared";
 import { AgentNativeIcon } from "@agent-native/toolkit/app/shared/AgentNativeIcon";
+import { isGuestEmail } from "@shared/guest";
 import {
   IconEdit,
   IconHome,
@@ -35,6 +37,8 @@ import { EVENTS_PATH } from "@/hooks/use-navigation-state";
 import { APP_TITLE } from "@/lib/app-config";
 import { chatThreadPath, HOME_PATH, threadIdFromPath } from "@/lib/chat-paths";
 import { cn } from "@/lib/utils";
+
+import { GuestBadge } from "./GuestBadge";
 
 const CHAT_STORAGE_KEY = "chat";
 const CHAT_ACTIVE_THREAD_KEY = `agent-chat-active-thread:${CHAT_STORAGE_KEY}`;
@@ -347,6 +351,7 @@ export function Sidebar({
   onCollapsedChange,
 }: SidebarProps) {
   const t = useT();
+  const guest = isGuestEmail(useSession().session?.email);
   const ToggleIcon = collapsed
     ? IconLayoutSidebarLeftExpand
     : IconLayoutSidebarLeftCollapse;
@@ -445,7 +450,7 @@ export function Sidebar({
         )}
       >
         <EventsNavLink collapsed={collapsed} />
-        <HomeNavLink collapsed={collapsed} />
+        {guest ? null : <HomeNavLink collapsed={collapsed} />}
         <ChatThreadsSection collapsed={collapsed} />
       </nav>
 
@@ -457,16 +462,20 @@ export function Sidebar({
               : "flex items-center gap-0.5",
           )}
         >
-          <OrgSwitcher
-            reserveSpace
-            compact={collapsed}
-            currentAppId="chat"
-            className={
-              collapsed
-                ? "size-8 bg-transparent p-0 hover:bg-sidebar-accent"
-                : "min-w-0 flex-1 h-11 rounded-lg bg-transparent px-3 py-2 text-sm text-sidebar-accent-foreground hover:bg-sidebar-accent"
-            }
-          />
+          {guest ? (
+            <GuestBadge compact={collapsed} />
+          ) : (
+            <OrgSwitcher
+              reserveSpace
+              compact={collapsed}
+              currentAppId="chat"
+              className={
+                collapsed
+                  ? "size-8 bg-transparent p-0 hover:bg-sidebar-accent"
+                  : "min-w-0 flex-1 h-11 rounded-lg bg-transparent px-3 py-2 text-sm text-sidebar-accent-foreground hover:bg-sidebar-accent"
+              }
+            />
+          )}
           {searchButton}
           {collapseButton}
         </div>

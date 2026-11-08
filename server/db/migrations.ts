@@ -133,4 +133,28 @@ CREATE TABLE IF NOT EXISTS pv_setup_packs (
 CREATE INDEX IF NOT EXISTS pv_setup_packs_owner_plan_created_idx ON pv_setup_packs (owner_email, plan_id, created_at);
 `,
   },
+  {
+    version: 4,
+    name: "pavilion_guest_sandboxes_v4",
+    sql: `
+CREATE TABLE IF NOT EXISTS pv_guest_sessions (
+  id TEXT PRIMARY KEY,
+  owner_email TEXT NOT NULL,
+  ip_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  expires_at TIMESTAMPTZ NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS pv_guest_sessions_owner_uq ON pv_guest_sessions (owner_email);
+CREATE INDEX IF NOT EXISTS pv_guest_sessions_expiry_idx ON pv_guest_sessions (expires_at);
+
+CREATE TABLE IF NOT EXISTS pv_rate_events (
+  id TEXT PRIMARY KEY,
+  bucket TEXT NOT NULL,
+  key_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
+);
+CREATE INDEX IF NOT EXISTS pv_rate_events_bucket_key_idx ON pv_rate_events (bucket, key_hash, created_at);
+CREATE INDEX IF NOT EXISTS pv_rate_events_bucket_created_idx ON pv_rate_events (bucket, created_at);
+`,
+  },
 ];

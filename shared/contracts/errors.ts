@@ -8,6 +8,7 @@ export const ERROR_STATUS = {
   PROPOSAL_STALE: 409,
   PROPOSAL_CLOSED: 409,
   HUMAN_ONLY: 403,
+  RATE_LIMITED: 429,
 } as const;
 
 export type PavilionErrorCode = keyof typeof ERROR_STATUS;

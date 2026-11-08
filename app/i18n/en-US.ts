@@ -66,6 +66,36 @@ const messages = {
     docsTitle: "Documentation",
     title: "Get started",
   },
+  landing: {
+    signIn: "Sign in",
+    title:
+      "Plan an event floor with an agent that has to follow the room's rules.",
+    pitch:
+      "You drag the stage and the chairs; the agent reads the same plan and changes it through the same actions. A layout engine checks every change against the walls, the exits and anything locked, and a redesign from the agent waits until you apply it.",
+    tryDemo: "Try the live demo",
+    starting: "Opening your sandbox…",
+    startFailed: "The demo could not start. Try again in a moment.",
+    demoNote:
+      "No account needed. You get your own copy of the Nova Product Launch, deleted after 24 hours.",
+    open: "Open your events",
+    previewAlt:
+      "Floor plan of the Nova Product Launch demo: an 18 by 12 metre hall with a stage, two screens, six rows of twenty chairs, a registration desk, a refreshment station, two exits and a pillar.",
+    previewCaption:
+      "The Nova demo as seeded, drawn by the same renderer as Pavilion's setup pack.",
+    stepEditTitle: "Edit the floor plan",
+    stepEditBody:
+      "Drag, rotate and lock items on a scaled plan. A move that hits a wall, an exit or another item is refused, and nothing is saved.",
+    stepAskTitle: "Ask the agent for a redesign",
+    stepAskBody:
+      "Ask it to fit 20 more seats. It runs the planner and comes back with a proposal: seats and cost before and after, and any shortfall.",
+    stepApplyTitle: "Apply it, then export",
+    stepApplyBody:
+      "Only you can apply a proposal, and an outdated one is refused. Then export a setup pack: a scaled plan, the item list and where everything goes.",
+  },
+  guest: {
+    sandbox: "Demo sandbox",
+    expires: "Your own copy, deleted 24 hours after you started.",
+  },
   events: {
     nav: "Events",
     empty: "No events yet. Open the demo to see a planned venue.",

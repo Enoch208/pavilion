@@ -139,3 +139,18 @@ export const setupPacks = pgTable("pv_setup_packs", {
   }).notNull(),
   createdAt: instant("created_at").notNull().defaultNow(),
 });
+
+export const guestSessions = pgTable("pv_guest_sessions", {
+  id: text("id").primaryKey(),
+  ownerEmail: text("owner_email").notNull(),
+  ipHash: text("ip_hash").notNull(),
+  createdAt: instant("created_at").notNull().defaultNow(),
+  expiresAt: instant("expires_at").notNull(),
+});
+
+export const rateEvents = pgTable("pv_rate_events", {
+  id: text("id").primaryKey(),
+  bucket: text("bucket").notNull(),
+  keyHash: text("key_hash").notNull(),
+  createdAt: instant("created_at").notNull().defaultNow(),
+});

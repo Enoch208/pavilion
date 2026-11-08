@@ -9,6 +9,7 @@ import {
   searchConversationReferences,
   validateConversationReferences,
 } from "../lib/composer-references.js";
+import { assertGuestTurnAllowed } from "../lib/guests/turn-limit.js";
 
 const INITIAL_TOOL_NAMES = [
   "view-screen",
@@ -36,8 +37,9 @@ export default createAgentChatPlugin({
       search: searchConversationReferences,
     },
   },
-  prepareRequest: async ({ references }) => {
-    await validateConversationReferences(references);
+  prepareRequest: async (details) => {
+    await validateConversationReferences(details.references);
+    await assertGuestTurnAllowed(details);
   },
   actions: loadActionsFromStaticRegistry(actionsRegistry),
   mcp: { connectorCatalog: [], appApprovalPage: true },
