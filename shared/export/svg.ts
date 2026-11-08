@@ -73,10 +73,12 @@ function titleBlock(pack: SetupPack, widthMm: number): string {
 export function renderFloorPlanSvg(
   pack: SetupPack,
   widthPx = 1_600,
+  options: { titled: boolean } = { titled: true },
 ): FloorPlanSvg {
   const { venue, event } = pack.source;
   const width = venue.widthMm + MARGIN_MM * 2;
-  const height = venue.heightMm + MARGIN_MM * 2 + TITLE_MM;
+  const height =
+    venue.heightMm + MARGIN_MM * 2 + (options.titled ? TITLE_MM : 0);
   const heightPx = Math.round((widthPx * height) / width);
   const svg = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-MARGIN_MM} ${-MARGIN_MM} ${width} ${height}" width="${widthPx}" height="${heightPx}" font-family="${FONT}" role="img" aria-label="${escapeMarkup(`Floor plan of ${event.title}`)}">`,
@@ -89,7 +91,7 @@ export function renderFloorPlanSvg(
     dimensions(venue),
     northArrow(venue),
     scaleBar(venue),
-    titleBlock(pack, width),
+    options.titled ? titleBlock(pack, width) : "",
     "</svg>",
   ].join("");
   return { svg, widthPx, heightPx };

@@ -41,6 +41,17 @@ describe("floor plan SVG", () => {
     expect(svg).not.toContain("<b>");
     expect(svg).toContain("&lt;img src=x onerror=&quot;alert(1)&quot;&gt;");
   });
+
+  it("can leave out the title block for a bare drawing", () => {
+    const pack = buildSetupPack(novaSource());
+    const { svg, heightPx } = renderFloorPlanSvg(pack, 2_040, {
+      titled: false,
+    });
+    expect(svg).toContain('viewBox="-1200 -1200 20400 14400"');
+    expect(heightPx).toBe(1_440);
+    expect(svg).not.toContain("Exported");
+    expect(svg.match(/data-object-id="/g)).toHaveLength(128);
+  });
 });
 
 describe("printable setup pack", () => {
