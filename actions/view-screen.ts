@@ -24,7 +24,7 @@ function selectedIds(selection: Record<string, unknown> | null): string[] {
 
 export default defineAction({
   description:
-    "Fresh read of what the user is looking at: navigation, the open event and plan (id, version, seats, cost, issue count) and the objects they have selected, verified against the database. Call before acting on 'this', 'these' or 'the selected' objects.",
+    "Fresh read of what the user is looking at: navigation, the open event and plan (id, version, seats, cost, issue count, pending proposal) and the objects they have selected, verified against the database. Call before acting on 'this', 'these' or 'the selected' objects.",
   schema: z.object({}),
   http: false,
   readOnly: true,
@@ -57,6 +57,17 @@ export default defineAction({
             objectCount: layout.objects.length,
             summary: layout.summary,
             issueCount: layout.issues.length,
+            pendingProposal: layout.proposal
+              ? {
+                  proposalId: layout.proposal.id,
+                  baseVersion: layout.proposal.baseVersion,
+                  stale: layout.proposal.stale,
+                  summary: layout.proposal.summary,
+                  seatsBefore: layout.proposal.report.seatsBefore,
+                  seatsAfter: layout.proposal.report.seatsAfter,
+                  notes: layout.proposal.report.notes,
+                }
+              : null,
           }
         : null,
       selection: {
