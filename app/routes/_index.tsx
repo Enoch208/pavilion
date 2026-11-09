@@ -1,3 +1,5 @@
+import type { MetaArgs } from "react-router";
+
 import { LandingPage } from "@/components/landing/LandingPage";
 import { APP_TITLE } from "@/lib/app-config";
 
@@ -28,7 +30,7 @@ function socialImage(origin: string) {
   ];
 }
 
-export function meta({ data }: { data?: LandingData }) {
+export function meta({ loaderData }: MetaArgs<typeof loader>) {
   return [
     { title: TITLE },
     { name: "description", content: DESCRIPTION },
@@ -38,7 +40,7 @@ export function meta({ data }: { data?: LandingData }) {
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: TITLE },
     { name: "twitter:description", content: DESCRIPTION },
-    ...(data?.origin ? socialImage(data.origin) : []),
+    ...(loaderData?.origin ? socialImage(loaderData.origin) : []),
   ];
 }
 
