@@ -162,7 +162,7 @@ export function FloorPlanCanvas(props: Props) {
       {drag?.kind === "marquee" ? (
         <rect
           {...marqueeRect(drag)}
-          className="pointer-events-none fill-primary/10 stroke-primary"
+          className="pointer-events-none fill-plan-accent/10 stroke-plan-accent"
           strokeDasharray="4 3"
           strokeWidth={1}
           vectorEffect="non-scaling-stroke"

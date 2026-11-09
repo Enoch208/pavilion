@@ -31,8 +31,11 @@ const CHANGE_STYLE: Record<
   ObjectChange,
   { className: string; dash: string | undefined }
 > = {
-  added: { className: "fill-primary/30 stroke-primary", dash: undefined },
-  moved: { className: "stroke-primary", dash: "3 2" },
+  added: {
+    className: "fill-plan-accent/30 stroke-plan-accent",
+    dash: undefined,
+  },
+  moved: { className: "stroke-plan-accent", dash: "3 2" },
   removed: {
     className: "fill-transparent stroke-destructive opacity-70",
     dash: "2 3",
@@ -60,7 +63,9 @@ export function PlanObjectShape(props: Props) {
   const shapeClass = cn(
     FILL_BY_KIND[object.kind],
     props.conflicted && "fill-destructive/30 stroke-destructive",
-    props.selected && !props.conflicted && "stroke-primary",
+    props.selected &&
+      !props.conflicted &&
+      "fill-plan-accent/25 stroke-plan-accent",
     change?.className,
   );
   const strokeWidth = props.selected || props.conflicted || change ? 2.5 : 1;

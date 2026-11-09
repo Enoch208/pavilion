@@ -25,6 +25,23 @@ const AUTHOR_KEY = {
   system: "proposal.bySystem",
 } as const;
 
+function Delta(props: { amount: number; label: string }) {
+  if (props.amount === 0) return null;
+  return (
+    <span
+      className={cn(
+        "rounded px-1 py-0.5 text-xs font-medium",
+        props.amount > 0
+          ? "bg-plan-accent/15 text-plan-accent"
+          : "bg-muted text-muted-foreground",
+      )}
+    >
+      {props.amount > 0 ? "+" : "\u2212"}
+      {props.label}
+    </span>
+  );
+}
+
 function Swatch(props: { className: string }) {
   return (
     <span
@@ -71,66 +88,56 @@ export function ProposalBar(props: Props) {
   return (
     <section
       aria-label={t(AUTHOR_KEY[proposal.createdBy])}
-      className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border bg-muted/40 px-4 py-2"
+      className="space-y-1.5 border-b border-border bg-muted/40 px-4 py-2"
     >
-      <p className="inline-flex items-center gap-2 text-sm font-medium">
-        <IconArrowsShuffle className="size-4" />
-        {t(AUTHOR_KEY[proposal.createdBy])}
-        <span className="font-mono text-xs font-normal text-muted-foreground">
-          {t("proposal.basedOn", { version: proposal.baseVersion })}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <p className="inline-flex items-center gap-2 text-sm font-medium">
+          <IconArrowsShuffle className="size-4" />
+          {t(AUTHOR_KEY[proposal.createdBy])}
+          <span className="font-mono text-xs font-normal text-muted-foreground">
+            {t("proposal.basedOn", { version: proposal.baseVersion })}
+          </span>
+        </p>
+        <span className="inline-flex items-center gap-1.5 text-sm tabular-nums">
+          {t("proposal.seats", {
+            before: report.seatsBefore,
+            after: report.seatsAfter,
+          })}
+          <Delta
+            amount={report.seatsAfter - report.seatsBefore}
+            label={String(Math.abs(report.seatsAfter - report.seatsBefore))}
+          />
         </span>
-      </p>
-      <span className="text-sm tabular-nums">
-        {t("proposal.seats", {
-          before: report.seatsBefore,
-          after: report.seatsAfter,
-        })}
-      </span>
-      <span className="text-sm tabular-nums">
-        {t("proposal.cost", {
-          before: money(report.costBeforeCents, currency),
-          after: money(report.costAfterCents, currency),
-        })}
-      </span>
-      <span className="inline-flex items-center gap-3 text-xs tabular-nums text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <Swatch className="border-primary bg-primary/30" />
-          {t("proposal.added", { count: report.added })}
+        <span className="inline-flex items-center gap-1.5 text-sm tabular-nums">
+          {t("proposal.cost", {
+            before: money(report.costBeforeCents, currency),
+            after: money(report.costAfterCents, currency),
+          })}
+          <Delta
+            amount={report.costAfterCents - report.costBeforeCents}
+            label={money(
+              Math.abs(report.costAfterCents - report.costBeforeCents),
+              currency,
+            )}
+          />
         </span>
-        <span className="inline-flex items-center gap-1">
-          <Swatch className="border-dashed border-primary" />
-          {t("proposal.moved", { count: report.moved })}
+        <span className="inline-flex items-center gap-3 text-xs tabular-nums text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Swatch className="border-plan-accent bg-plan-accent/30" />
+            {t("proposal.added", { count: report.added })}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Swatch className="border-dashed border-plan-accent" />
+            {t("proposal.moved", { count: report.moved })}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Swatch className="border-dotted border-destructive" />
+            {t("proposal.removed", { count: report.removed })}
+          </span>
         </span>
-        <span className="inline-flex items-center gap-1">
-          <Swatch className="border-dotted border-destructive" />
-          {t("proposal.removed", { count: report.removed })}
-        </span>
-      </span>
-      <div className="ml-auto flex items-center gap-2">
-        <ViewToggle
-          reviewing={props.reviewing}
-          onReviewingChange={props.onReviewingChange}
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled={props.busy}
-          onClick={props.onDiscard}
-        >
-          {t("proposal.discard")}
-        </Button>
-        {proposal.stale ? (
-          <Button size="sm" disabled={props.busy} onClick={props.onRegenerate}>
-            {t("proposal.regenerate")}
-          </Button>
-        ) : (
-          <Button size="sm" disabled={props.busy} onClick={props.onApply}>
-            {props.busy ? t("proposal.applying") : t("proposal.apply")}
-          </Button>
-        )}
       </div>
-      {proposal.stale || report.notes.length > 0 ? (
-        <div className="basis-full space-y-0.5 text-xs">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="min-w-0 flex-[1_1_18rem] space-y-0.5 text-xs">
           {proposal.stale ? (
             <p className="inline-flex items-center gap-1 text-destructive">
               <IconAlertTriangle className="size-3.5" />
@@ -146,7 +153,34 @@ export function ProposalBar(props: Props) {
             </p>
           ))}
         </div>
-      ) : null}
+        <div className="ml-auto flex items-center gap-2">
+          <ViewToggle
+            reviewing={props.reviewing}
+            onReviewingChange={props.onReviewingChange}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={props.busy}
+            onClick={props.onDiscard}
+          >
+            {t("proposal.discard")}
+          </Button>
+          {proposal.stale ? (
+            <Button
+              size="sm"
+              disabled={props.busy}
+              onClick={props.onRegenerate}
+            >
+              {t("proposal.regenerate")}
+            </Button>
+          ) : (
+            <Button size="sm" disabled={props.busy} onClick={props.onApply}>
+              {props.busy ? t("proposal.applying") : t("proposal.apply")}
+            </Button>
+          )}
+        </div>
+      </div>
     </section>
   );
 }

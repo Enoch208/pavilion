@@ -5,8 +5,13 @@
 
 @source "./**/*.{ts,tsx}";
 
+@theme inline {
+  --color-plan-accent: hsl(var(--plan-accent));
+}
+
 :root {
   --background: 0 0% 100%;
+  --plan-accent: 200 98% 39%;
   --foreground: 0 0% 10%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 10%;
@@ -230,6 +235,7 @@
 
 .dark {
   --background: 0 0% 13%;
+  --plan-accent: 198 93% 60%;
   --foreground: 0 0% 90%;
   --card: 0 0% 16.47%;
   --card-foreground: 0 0% 90%;
