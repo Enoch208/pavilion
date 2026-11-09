@@ -1,119 +1,150 @@
 import { appPath } from "@agent-native/core/client/api-path";
-import { useSession } from "@agent-native/core/client/hooks";
 import { useT } from "@agent-native/core/client/i18n";
+import { IconLayoutBoard } from "@tabler/icons-react";
 import { useMemo } from "react";
-import { Link } from "react-router";
 
-import { Button } from "@/components/ui/button";
-import { EVENTS_PATH } from "@/hooks/use-navigation-state";
 import { APP_TITLE } from "@/lib/app-config";
+import { cn } from "@/lib/utils";
 
-import { novaPreviewUrl } from "./nova-preview";
-import { useStartDemo } from "./use-start-demo";
+import { HeroCanvas } from "./HeroCanvas";
+import { JourneySection } from "./JourneySection";
+import { DemoButton, DISPLAY, PILL_SECONDARY } from "./landing-ui";
+import { novaPack, novaPreviewUrl } from "./nova-preview";
+import { AgentNativeSection, RulesSection } from "./ProofSections";
 
-function Step(props: { number: number; title: string; body: string }) {
+const NAV = [
+  ["#how", "landing.navHow"],
+  ["#rules", "landing.navRules"],
+  ["#agent", "landing.navAgent"],
+] as const;
+
+function Wordmark() {
   return (
-    <li>
-      <span className="font-mono text-xs text-muted-foreground">
-        {props.number}
-      </span>
-      <h2 className="mt-1 text-sm font-semibold">{props.title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{props.body}</p>
-    </li>
+    <span className="inline-flex items-center gap-2 text-[15px] font-medium tracking-[-0.02em] text-[#202020]">
+      <IconLayoutBoard className="size-5" stroke={1.75} />
+      {APP_TITLE}
+    </span>
   );
 }
 
-function DemoAction() {
+function Header() {
   const t = useT();
-  const { session, status } = useSession();
-  const demo = useStartDemo();
-  if (session) {
-    return (
-      <Button size="lg" asChild>
-        <Link to={EVENTS_PATH}>{t("landing.open")}</Link>
-      </Button>
-    );
-  }
   return (
-    <div>
-      <Button
-        size="lg"
-        onClick={demo.start}
-        disabled={demo.pending || status === "loading"}
+    <header className="absolute inset-x-0 top-0 z-10 flex h-[100px] items-center justify-between px-6 lg:px-24">
+      <Wordmark />
+      <nav className="hidden items-center md:flex">
+        {NAV.map(([href, label]) => (
+          <a
+            key={href}
+            href={href}
+            className="rounded-full px-4 py-2 text-sm text-[#202020] transition-colors hover:bg-black/5"
+          >
+            {t(label)}
+          </a>
+        ))}
+      </nav>
+      <a
+        href={appPath("/sign-in")}
+        className="rounded-full px-4 py-2 text-sm text-[#202020] transition-colors hover:bg-black/5"
       >
-        {demo.pending ? t("landing.starting") : t("landing.tryDemo")}
-      </Button>
-      {demo.failed ? (
-        <p role="alert" className="mt-3 text-sm text-destructive">
-          {demo.failed.message ?? t("landing.startFailed")}
-        </p>
-      ) : (
-        <p className="mt-3 text-xs text-muted-foreground">
-          {t("landing.demoNote")}
-        </p>
-      )}
-    </div>
+        {t("landing.signIn")}
+      </a>
+    </header>
+  );
+}
+
+function Footer() {
+  const t = useT();
+  const limits = [
+    t("landing.limitPrices"),
+    t("landing.limitCapacity"),
+    t("landing.limitCheck"),
+  ];
+  return (
+    <footer className="border-t border-[#ececec] px-6 py-16 lg:px-[120px]">
+      <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[1fr_auto_auto] md:gap-24">
+        <div className="space-y-3">
+          <Wordmark />
+          <p className="max-w-xs text-sm leading-6 text-[#6b6b6b]">
+            {t("landing.footerBuilt")}
+          </p>
+        </div>
+        <div>
+          <p className="pt-1 font-semibold text-[#202020]">
+            {t("landing.footerProduct")}
+          </p>
+          <ul className="mt-4 space-y-3 text-sm text-[#6b6b6b]">
+            {NAV.map(([href, label]) => (
+              <li key={href}>
+                <a href={href} className="hover:text-[#202020]">
+                  {t(label)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="pt-1 font-semibold text-[#202020]">
+            {t("landing.footerLimits")}
+          </p>
+          <ul className="mt-4 max-w-[16rem] space-y-3 text-sm leading-5 text-[#6b6b6b]">
+            {limits.map((limit) => (
+              <li key={limit}>{limit}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </footer>
   );
 }
 
 export function LandingPage() {
   const t = useT();
-  const preview = useMemo(novaPreviewUrl, []);
+  const pack = useMemo(novaPack, []);
+  const preview = useMemo(() => novaPreviewUrl(pack), [pack]);
   return (
-    <div className="min-h-dvh bg-background text-foreground">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <span className="text-sm font-semibold">{APP_TITLE}</span>
-        <a
-          href={appPath("/sign-in")}
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          {t("landing.signIn")}
-        </a>
-      </header>
-      <main className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-14 pt-6 sm:px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:pt-14">
-        <section>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-            {t("landing.title")}
+    <div className="min-h-dvh bg-[#fafafa] font-sans text-[#202020] antialiased">
+      <Header />
+      <main>
+        <section className="flex flex-col items-center px-6 pb-16 pt-[140px] text-center lg:pb-[72px] lg:pt-[164px]">
+          <h1
+            className={cn(
+              DISPLAY,
+              "text-[clamp(3.25rem,7.9vw,7.11rem)] leading-[1.015] tracking-[-0.067em]",
+            )}
+          >
+            <span className="block">{t("landing.titleLine1")}</span>
+            <span className="block">{t("landing.titleLine2")}</span>
           </h1>
-          <p className="mt-4 max-w-prose text-pretty text-muted-foreground">
+          <p className="mt-7 max-w-xl text-lg leading-[1.6] tracking-[-0.025em] text-[#6b6b6b]">
             {t("landing.pitch")}
           </p>
           <div className="mt-8">
-            <DemoAction />
+            <DemoButton note />
           </div>
         </section>
-        <figure className="overflow-hidden rounded-xl border border-border bg-white">
-          <img
-            src={preview}
-            alt={t("landing.previewAlt")}
-            width={1200}
-            height={847}
-            className="block h-auto w-full"
-          />
-          <figcaption className="border-t border-stone-200 bg-stone-50 px-4 py-2 text-xs text-stone-600">
-            {t("landing.previewCaption")}
-          </figcaption>
-        </figure>
+        <HeroCanvas preview={preview} />
+        <JourneySection preview={preview} pack={pack} />
+        <RulesSection />
+        <AgentNativeSection />
+        <section className="flex flex-col items-center px-6 py-24 text-center lg:py-32">
+          <h2
+            className={cn(
+              DISPLAY,
+              "text-[clamp(3rem,6.95vw,6.25rem)] leading-[1.06] tracking-[-0.065em]",
+            )}
+          >
+            {t("landing.closingTitle")}
+          </h2>
+          <div className="mt-10 flex flex-wrap items-start justify-center gap-3">
+            <DemoButton note={false} />
+            <a href={appPath("/sign-in")} className={PILL_SECONDARY}>
+              {t("landing.signIn")}
+            </a>
+          </div>
+        </section>
       </main>
-      <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
-        <ol className="grid gap-6 border-t border-border pt-10 md:grid-cols-3">
-          <Step
-            number={1}
-            title={t("landing.stepEditTitle")}
-            body={t("landing.stepEditBody")}
-          />
-          <Step
-            number={2}
-            title={t("landing.stepAskTitle")}
-            body={t("landing.stepAskBody")}
-          />
-          <Step
-            number={3}
-            title={t("landing.stepApplyTitle")}
-            body={t("landing.stepApplyBody")}
-          />
-        </ol>
-      </section>
+      <Footer />
     </div>
   );
 }

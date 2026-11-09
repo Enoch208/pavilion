@@ -1,9 +1,9 @@
 import { NOVA, novaObjects } from "@shared/demo/nova";
-import { buildSetupPack } from "@shared/export/pack";
+import { buildSetupPack, type SetupPack } from "@shared/export/pack";
 import { renderFloorPlanSvg } from "@shared/export/svg";
 
-export function novaPreviewUrl(): string {
-  const pack = buildSetupPack({
+export function novaPack(): SetupPack {
+  return buildSetupPack({
     event: {
       title: NOVA.title,
       eventType: NOVA.eventType,
@@ -20,6 +20,9 @@ export function novaPreviewUrl(): string {
     })),
     exportedAt: new Date(0).toISOString(),
   });
+}
+
+export function novaPreviewUrl(pack: SetupPack): string {
   const { svg } = renderFloorPlanSvg(pack, 1_200, { titled: false });
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

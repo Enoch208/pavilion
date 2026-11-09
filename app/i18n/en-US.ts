@@ -78,29 +78,95 @@ const messages = {
   },
   landing: {
     signIn: "Sign in",
-    title:
-      "Plan an event floor with an agent that has to follow the room's rules.",
+    navHow: "How it works",
+    navRules: "The rules",
+    navAgent: "Agent-Native",
+    titleLine1: "Plan the room.",
+    titleLine2: "Check every move.",
     pitch:
-      "You drag the stage and the chairs; the agent reads the same plan and changes it through the same actions. A layout engine checks every change against the walls, the exits and anything locked, and a redesign from the agent waits until you apply it.",
+      "You and an agent edit one floor plan. A layout engine checks every change against the walls, the exits and anything locked.",
     tryDemo: "Try the live demo",
     starting: "Opening your sandbox…",
     startFailed: "The demo could not start. Try again in a moment.",
     demoNote:
       "No account needed. You get your own copy of the Nova Product Launch, deleted after 24 hours.",
     open: "Open your events",
+    canvasTitle: "Nova Product Launch · Main hall",
+    canvasSize: "18 × 12 m",
+    canvasCaption: "Floor plan, as seeded",
     previewAlt:
       "Floor plan of the Nova Product Launch demo: an 18 by 12 metre hall with a stage, two screens, six rows of twenty chairs, a registration desk, a refreshment station, two exits and a pillar.",
-    previewCaption:
-      "The Nova demo as seeded, drawn by the same renderer as Pavilion's setup pack.",
-    stepEditTitle: "Edit the floor plan",
+    cardProposalEyebrow: "Agent proposal",
+    cardProposalSeats: "seats, same hall",
+    cardSeats: "Seats",
+    cardCost: "Cost",
+    cardProposalNote: "Waiting for you to apply or discard.",
+    cardCheckTitle: "Layout check",
+    checkWalls: "Inside the walls",
+    checkOverlap: "No overlaps",
+    checkExits: "Exits kept clear",
+    checkLocked: "Locked items in place",
+    journeyTitle: "From plan to setup pack.",
+    stepEditTitle: "Edit",
     stepEditBody:
       "Drag, rotate and lock items on a scaled plan. A move that hits a wall, an exit or another item is refused, and nothing is saved.",
-    stepAskTitle: "Ask the agent for a redesign",
+    stepAskTitle: "Ask",
     stepAskBody:
-      "Ask it to fit 20 more seats. It runs the planner and comes back with a proposal: seats and cost before and after, and any shortfall.",
-    stepApplyTitle: "Apply it, then export",
+      "Ask the agent to fit 20 more seats. It runs the planner and returns a proposal; the plan itself does not change.",
+    stepCompareTitle: "Compare",
+    stepCompareBody:
+      "Flip between Current and Proposal, or look at it in 3D, where the added chairs rise into place in blue.",
+    stepApplyTitle: "Apply",
     stepApplyBody:
-      "Only you can apply a proposal, and an outdated one is refused. Then export a setup pack: a scaled plan, the item list and where everything goes.",
+      "Only a person can apply a proposal, and one planned from an older version is refused.",
+    stepExportTitle: "Export",
+    stepExportBody:
+      "Freeze a version into a setup pack for the crew: a scaled plan, the item list, the seating rows and where everything goes.",
+    demoRefused: "Move refused",
+    demoRefusedBody: "The chair would overlap the stage. Nothing was saved.",
+    demoPrompt: "Fit 20 more seats",
+    demoReply:
+      "I created a theatre-layout proposal for 140 seats. It adds 20 chairs and keeps the 3 locked objects in place. Review it, then choose Apply or Discard.",
+    demoDiff: "20 added · 0 moved · 0 removed",
+    demoApplied: "Proposal applied.",
+    demoAppliedBody: "The plan is now version 2: 140 of 140 guests seated.",
+    demoTotal: "Total, example prices",
+    rulesEyebrow: "The rules",
+    rulesTitle: "The engine decides. The agent proposes.",
+    ruleCheckTitle: "Every write is checked",
+    ruleCheckBody:
+      "Drags, inspector edits and agent changes pass the same checks: inside the walls, no overlaps, exits clear, locked items kept. A refused write saves nothing.",
+    ruleProposeTitle: "Redesigns are proposals",
+    ruleProposeBody:
+      "The agent runs a deterministic planner and reports seats and cost before and after, and any shortfall. You apply it, or you don't.",
+    ruleStaleTitle: "Newer work wins",
+    ruleStaleBody:
+      "Every write carries the version it was based on. A proposal planned before someone else's edit is refused and can be regenerated.",
+    agentEyebrow: "Built on Agent-Native",
+    agentTitle: "Same actions. Same plan.",
+    agentBody:
+      "The canvas and the agent call the same actions. Dragging a chair and asking the agent to move it both run move-objects.",
+    featuresLead: "What the agent can see and do.",
+    pathCanvas: "You drag Chair A3",
+    pathAgent: '"Move it closer to the stage"',
+    pathEngine: "Same layout check, same audit trail",
+    featureScreenTitle: "Your screen",
+    featureScreenBody:
+      "The plan shares what you have selected. Ask what you selected, or to lock it, and the agent reads the same selection.",
+    feature3dTitle: "The same plan in 3D",
+    feature3dBody:
+      "Switch the plan to 3D to see the saved layout with typical heights. A proposal shows its new chairs rising into place.",
+    featurePackTitle: "Setup packs",
+    featurePackBody:
+      "Ask for the plan for the crew and the agent freezes a version: a scaled plan as SVG, PNG or printable HTML, and the item list.",
+    closingTitle: "Plan your floor.",
+    footerBuilt:
+      "Built with Agent-Native for the Builder.io Agent-Native Hackathon, 2026.",
+    footerProduct: "Pavilion",
+    footerLimits: "Honest limits",
+    limitPrices: "Prices are example data, not supplier quotes.",
+    limitCapacity: "Capacity is modelled seating, not legal occupancy.",
+    limitCheck: "The layout check is not a certified evacuation model.",
   },
   guest: {
     sandbox: "Demo sandbox",
