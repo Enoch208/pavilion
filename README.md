@@ -2,7 +2,7 @@
 
 An event floor planner where a person and an AI agent edit the same scaled floor plan, and a layout engine checks every change, whoever makes it.
 
-**Live demo:** https://pavilion.76-13-10-76.sslip.io (no account needed: **Try the live demo** gives you your own copy of the Nova Product Launch, deleted after 24 hours)
+**Live demo:** https://pavilion-nine.vercel.app (no account needed: **Try the live demo** gives you your own copy of the Nova Product Launch, deleted after 24 hours). A second copy runs at https://pavilion.76-13-10-76.sslip.io with its own database.
 
 Built with [Agent-Native](https://www.agent-native.com) for the Builder.io Agent-Native Hackathon, 2026.
 
@@ -39,17 +39,17 @@ The agent's operating rules are in [`AGENTS.md`](AGENTS.md): read the screen bef
 
 ## Where the logic lives
 
-| Path                                            | What it holds                                                                                            |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `shared/geometry/`                              | Footprints, wall and collision checks, keep-clear zones, free-spot search                                |
-| `shared/layout/`                                | Seat and cost summary, layout diff, descriptions                                                         |
-| `server/lib/planner/`                           | The theatre and banquet planners                                                                         |
-| `server/lib/proposals/`, `server/lib/versions/` | Proposals bound to a base version, history snapshots                                                     |
-| `shared/export/`                                | The setup-pack renderer (SVG plan with dimensions, scale bar and north arrow, item list, printable HTML) |
-| `shared/scene/`                                 | The pure mapping from plan objects to 3D blocks                                                          |
-| `actions/`                                      | The contracts the UI and the agent share                                                                 |
-| `app/`                                          | The React Router UI: events, floor plan, 3D view, proposal review, setup packs, landing                  |
-| `deploy/vps/`                                   | The live deployment (Node behind nginx, PostgreSQL in Docker)                                            |
+| Path                                            | What it holds                                                                                                     |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `shared/geometry/`                              | Footprints, wall and collision checks, keep-clear zones, free-spot search                                         |
+| `shared/layout/`                                | Seat and cost summary, layout diff, descriptions                                                                  |
+| `server/lib/planner/`                           | The theatre and banquet planners                                                                                  |
+| `server/lib/proposals/`, `server/lib/versions/` | Proposals bound to a base version, history snapshots                                                              |
+| `shared/export/`                                | The setup-pack renderer (SVG plan with dimensions, scale bar and north arrow, item list, printable HTML)          |
+| `shared/scene/`                                 | The pure mapping from plan objects to 3D blocks                                                                   |
+| `actions/`                                      | The contracts the UI and the agent share                                                                          |
+| `app/`                                          | The React Router UI: events, floor plan, 3D view, proposal review, setup packs, landing                           |
+| `deploy/vps/`                                   | The self-hosted copy (Node behind nginx, PostgreSQL in Docker); the main demo runs on Vercel with Neon PostgreSQL |
 
 ## Run it
 

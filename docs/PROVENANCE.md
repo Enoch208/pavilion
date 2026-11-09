@@ -36,4 +36,4 @@ The favicon, the app icons and the sidebar mark are the template's Agent-Native 
   - history, setup-pack page, and screen-aware agent prompts.
 - **Guest sandboxes** (`server/lib/guests/`, `server/lib/demo/`): per-visitor seeded events, expiry, and SQL rate limits on demo starts and guest agent messages.
 - **Tests** (`tests/`): 82 tests across geometry, both planners, layout summary and diff, export rendering, 3D blocks, the demo seed, rate limits and agent prompts.
-- **Deployment** (`deploy/vps/`): the live server, adapted from Orvane's scripts as listed above.
+- **Deployment**: the main demo runs on Vercel with a Neon PostgreSQL database, built and uploaded with the Vercel CLI as the Agent-Native guide describes. `deploy/vps/` is the self-hosted copy, adapted from Orvane's scripts as listed above.
