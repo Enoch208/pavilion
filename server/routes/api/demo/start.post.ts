@@ -1,3 +1,4 @@
+import { createOrganization } from "@agent-native/core/org";
 import {
   createBetterAuthSessionForEmail,
   ensureIdentityUser,
@@ -50,6 +51,7 @@ export default defineEventHandler(async (event) => {
   await ensureIdentityUser(email, GUEST_NAME, undefined, {
     emailVerified: true,
   });
+  await createOrganization(`${GUEST_NAME}'s workspace`, email);
   const session = await createBetterAuthSessionForEmail(email, undefined, {
     expiresAt,
   });
