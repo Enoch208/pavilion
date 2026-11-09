@@ -165,6 +165,20 @@ const messages = {
       "Arrows move 25 cm, Shift+arrows 1 m, R rotates, L locks, Delete removes, Esc clears.",
     invalidNumber: "Enter a number of metres.",
   },
+  plan3d: {
+    viewToggle: "Floor plan view",
+    plan: "Plan",
+    threeD: "3D",
+    label:
+      "3D view of {{venue}}, {{width}} by {{depth}} metres. Drag to orbit, scroll to zoom, right-drag to pan.",
+    heightsNote: "Sizes from the plan. Heights are typical values.",
+    resetView: "Reset view",
+    added: "Added",
+    moved: "Moved",
+    removed: "Removed",
+    unsupported:
+      "This browser has WebGL turned off, so the 3D view can't load. The plan view still works.",
+  },
   proposal: {
     byAgent: "Proposed by the agent",
     byHuman: "Your proposal",

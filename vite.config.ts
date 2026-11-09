@@ -15,6 +15,11 @@ export default defineConfig({
       "app/components/chat/ChatRouteContent.tsx",
       "app/routes/{home,chat.$threadId}.tsx",
     ],
+    include: [
+      "@react-three/fiber",
+      "three",
+      "three/addons/controls/OrbitControls.js",
+    ],
   },
   plugins: [
     ...reactRouterPlugins(),

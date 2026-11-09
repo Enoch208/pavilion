@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { ExportButton } from "@/components/pack/ExportButton";
 
 import { CatalogPanel } from "./CatalogPanel";
-import { FloorPlanCanvas } from "./FloorPlanCanvas";
 import { HistoryPopover } from "./HistoryPopover";
 import { InspectorPanel } from "./InspectorPanel";
 import type { Move } from "./optimistic";
@@ -21,6 +20,7 @@ import { planKeyHandler } from "./plan-keys";
 import { RemoveDialog, ResetDialog } from "./PlanDialogs";
 import { PlanHeader } from "./PlanHeader";
 import { PlanNotFound, PlanSkeleton } from "./PlanStates";
+import { PlanSurface } from "./PlanSurface";
 import { ProposalBar } from "./ProposalBar";
 import { SuggestLayout } from "./SuggestLayout";
 import { useLayoutEdits } from "./use-layout-edits";
@@ -135,19 +135,14 @@ export function FloorPlanPage({ eventId }: { eventId: string }) {
       ) : null}
       <div className="@container min-h-0 flex-1">
         <div className="grid h-full grid-cols-1 overflow-y-auto @2xl:grid-cols-[minmax(0,1fr)_16rem] @2xl:grid-rows-[minmax(0,auto)_minmax(0,1fr)] @2xl:overflow-hidden">
-          <div className="min-h-[22rem] p-3 @2xl:row-span-2">
-            <FloorPlanCanvas
-              view={layout}
-              review={review}
-              selectedIds={selectedIds}
-              onSelect={setSelectedIds}
-              onDrop={tryMove}
-              onLockedDrag={(name) =>
-                toast.error(t("plan.lockedMove", { name }))
-              }
-              onKeyDown={onKeyDown}
-            />
-          </div>
+          <PlanSurface
+            view={layout}
+            review={review}
+            selectedIds={selectedIds}
+            onSelect={setSelectedIds}
+            onDrop={tryMove}
+            onKeyDown={onKeyDown}
+          />
           <aside className="border-t border-border @2xl:overflow-y-auto @2xl:border-l @2xl:border-t-0">
             {reviewing ? (
               <p className="p-3 text-sm text-muted-foreground">
