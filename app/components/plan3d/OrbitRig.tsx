@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const WIDE_ASPECT = 1.35;
@@ -23,8 +23,12 @@ export function OrbitRig({ widthM, depthM, resetKey }: Props) {
   const camera = useThree((state) => state.camera);
   const canvas = useThree((state) => state.gl.domElement);
   const invalidate = useThree((state) => state.invalidate);
-  const getState = useThree((state) => state.get);
+  const aspect = useThree(
+    (state) => state.size.width / Math.max(1, state.size.height),
+  );
   const [controls, setControls] = useState<OrbitControls | null>(null);
+  const userMoved = useRef(false);
+  const appliedReset = useRef(resetKey);
 
   useEffect(() => {
     const next = new OrbitControls(camera, canvas);
@@ -32,24 +36,33 @@ export function OrbitRig({ widthM, depthM, resetKey }: Props) {
     next.minDistance = 2;
     next.screenSpacePanning = false;
     const render = () => invalidate();
+    const takeOver = () => {
+      userMoved.current = true;
+    };
     next.addEventListener("change", render);
+    next.addEventListener("start", takeOver);
     setControls(next);
     return () => {
       next.removeEventListener("change", render);
+      next.removeEventListener("start", takeOver);
       next.dispose();
     };
   }, [camera, canvas, invalidate]);
 
   useEffect(() => {
     if (!controls) return;
-    const { width, height } = getState().size;
-    const home = homeView(widthM, depthM, width / Math.max(1, height));
+    if (appliedReset.current !== resetKey) {
+      appliedReset.current = resetKey;
+      userMoved.current = false;
+    }
+    if (userMoved.current) return;
+    const home = homeView(widthM, depthM, aspect);
     camera.position.set(...home.position);
     controls.target.set(...home.target);
     controls.maxDistance = Math.max(widthM, depthM) * 3;
     controls.update();
     invalidate();
-  }, [controls, camera, widthM, depthM, resetKey, invalidate, getState]);
+  }, [controls, camera, widthM, depthM, resetKey, aspect, invalidate]);
 
   return null;
 }

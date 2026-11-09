@@ -20,6 +20,33 @@ const PlanScene = lazy(() => import("@/components/plan3d/PlanScene"));
 
 type Mode = "plan" | "3d";
 
+function modeKey(eventId: string) {
+  return `pavilion:plan-mode:${eventId}`;
+}
+
+function readMode(eventId: string): Mode {
+  try {
+    return window.sessionStorage.getItem(modeKey(eventId)) === "3d"
+      ? "3d"
+      : "plan";
+  } catch {
+    return "plan"; // coercion-ok: blocked storage only forgets the view choice; the plan view is the safe start
+  }
+}
+
+function useStoredMode(eventId: string) {
+  const [mode, setMode] = useState<Mode>(() => readMode(eventId));
+  function change(next: Mode) {
+    setMode(next);
+    try {
+      window.sessionStorage.setItem(modeKey(eventId), next);
+    } catch {
+      return; // coercion-ok: blocked storage only forgets the view choice for the next visit
+    }
+  }
+  return [mode, change] as const;
+}
+
 type Props = {
   view: LayoutView;
   review: Review | null;
@@ -65,7 +92,7 @@ function ModeToggle(props: { mode: Mode; onChange: (mode: Mode) => void }) {
 
 export function PlanSurface(props: Props) {
   const t = useT();
-  const [mode, setMode] = useState<Mode>("plan");
+  const [mode, setMode] = useStoredMode(props.view.event.id);
   return (
     <div className="relative min-h-[22rem] p-3 @2xl:row-span-2">
       {mode === "3d" ? (
