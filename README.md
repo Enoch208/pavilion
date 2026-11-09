@@ -4,6 +4,8 @@ An event floor planner where a person and an AI agent edit the same scaled floor
 
 **Live demo:** https://pavilion-nine.vercel.app (no account needed: **Try the live demo** gives you your own copy of the Nova Product Launch, deleted after 24 hours). A second copy runs at https://pavilion.76-13-10-76.sslip.io with its own database.
 
+**Pitch deck:** https://pavilion-nine.vercel.app/deck.html (twelve slides; arrow keys or swipe).
+
 Built with [Agent-Native](https://www.agent-native.com) for the Builder.io Agent-Native Hackathon, 2026.
 
 ## Try it in 60 seconds
