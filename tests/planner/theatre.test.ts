@@ -107,6 +107,12 @@ describe("theatre planner", () => {
     expect(result.report.notes.join(" ")).toMatch(/shortfall|of 1000/i);
   });
 
+  it("fits at most 156 theatre seats in the Nova hall with 1.2 m aisles", () => {
+    const result = run(seeded(), 200);
+    expect(result.report.seatsAfter).toBe(156);
+    expect(result.report.shortfall).toBe(44);
+  });
+
   it("seats as many guests as the rules allow before weighing anything else", () => {
     const short = run(seeded(), 1_000);
     const tighter = run(seeded(), 150);
