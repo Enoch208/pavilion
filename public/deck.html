@@ -1,0 +1,1309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <title>Pavilion · Pitch deck</title>
+    <meta
+      name="description"
+      content="Pavilion: a floor planner where a person and an AI agent edit one event layout through the same actions, checked by a layout engine."
+    />
+    <meta property="og:title" content="Pavilion · Pitch deck" />
+    <meta
+      property="og:description"
+      content="Plan the room. Check every move. Built on Agent-Native."
+    />
+    <meta
+      property="og:image"
+      content="https://pavilion-nine.vercel.app/og.png"
+    />
+    <link rel="icon" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/deck/inter.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <style>
+      @font-face {
+        font-family: "Inter Variable";
+        src: url("/deck/inter.woff2") format("woff2");
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      :root {
+        --bg: #fafafa;
+        --ink: #202020;
+        --muted: #6b6b6b;
+        --faint: #969696;
+        --line: #e4e4e4;
+        --panel: #f0f0f0;
+        --sage: #dfe6c9;
+        --sage-ink: #2c3a1c;
+        --sky: #0284c7;
+        --sky-soft: #e0f2fe;
+        --red: #b42318;
+        --green: #1e7a3c;
+        --green-soft: #e6f4ea;
+        --k: 0.25;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        background: #111111;
+      }
+      body {
+        font-family: "Inter Variable", Inter, system-ui, sans-serif;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .stage {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        zoom: var(--k);
+        flex: none;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        background: var(--bg);
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 260ms ease,
+          visibility 260ms;
+      }
+      .slide.is-active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .top,
+      .foot {
+        position: absolute;
+        left: 56px;
+        right: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .top {
+        top: 34px;
+      }
+      .foot {
+        bottom: 30px;
+        font-size: 12px;
+        color: var(--faint);
+        font-variant-numeric: tabular-nums;
+      }
+      .mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      .mark svg {
+        width: 20px;
+        height: 20px;
+      }
+      .label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .body {
+        position: absolute;
+        inset: 92px 56px 70px;
+        display: flex;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+      }
+      h1,
+      h2 {
+        font-weight: 500;
+        text-wrap: balance;
+      }
+      h1 {
+        font-size: 92px;
+        line-height: 1;
+        letter-spacing: -0.067em;
+      }
+      h2 {
+        font-size: 54px;
+        line-height: 1.04;
+        letter-spacing: -0.058em;
+      }
+      h2.small {
+        font-size: 44px;
+      }
+      h3 {
+        font-size: 21px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+      }
+      .lede {
+        font-size: 19px;
+        line-height: 1.55;
+        letter-spacing: -0.02em;
+        color: var(--muted);
+      }
+      .text {
+        font-size: 15px;
+        line-height: 1.6;
+        letter-spacing: -0.01em;
+        color: var(--muted);
+      }
+      .note {
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--faint);
+      }
+      .num {
+        font-variant-numeric: tabular-nums;
+      }
+      .panel {
+        background: var(--panel);
+        border-radius: 28px;
+        padding: 18px;
+      }
+      .shot {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.07),
+          0 24px 60px -30px rgba(0, 0, 0, 0.35);
+      }
+      .card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 26px;
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.06),
+          0 18px 40px -28px rgba(0, 0, 0, 0.3);
+      }
+      .card.sage {
+        background: var(--sage);
+        color: var(--sage-ink);
+        box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.3);
+      }
+      .card.dark {
+        background: var(--ink);
+        color: #ffffff;
+        box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.5);
+      }
+      .card.sage .text,
+      .card.sage .label {
+        color: var(--sage-ink);
+      }
+      .card.dark .text {
+        color: #c9c9c9;
+      }
+      .card.dark .label {
+        color: #a3a3a3;
+      }
+      .pill {
+        display: inline-flex;
+        height: 48px;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 0 24px;
+        font-size: 15px;
+        letter-spacing: -0.01em;
+      }
+      .pill.primary {
+        background: var(--ink);
+        color: #ffffff;
+      }
+      .pill.secondary {
+        background: #eaeaea;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        background: #ffffff;
+        padding: 8px 14px;
+        font-size: 13px;
+        color: var(--muted);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
+      }
+      .tick {
+        display: inline-flex;
+        width: 16px;
+        height: 16px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--green-soft);
+        color: var(--green);
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .rows {
+        display: flex;
+        flex-direction: column;
+      }
+      .rows > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 0;
+        border-top: 1px solid var(--line);
+        font-size: 15px;
+        letter-spacing: -0.01em;
+      }
+      .rows > div > span:first-child {
+        color: var(--muted);
+      }
+      .delta {
+        display: inline-block;
+        margin-left: 6px;
+        border-radius: 6px;
+        background: var(--sky-soft);
+        padding: 1px 7px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--sky);
+      }
+      .big {
+        font-size: 108px;
+        font-weight: 500;
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+      }
+      .stat {
+        font-size: 64px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.06em;
+      }
+      .mono {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 12.5px;
+        letter-spacing: -0.01em;
+      }
+      .flow {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+      }
+      .node {
+        border-radius: 16px;
+        background: #ffffff;
+        padding: 18px 20px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
+      }
+      .arrow {
+        flex: none;
+        width: 44px;
+        align-self: center;
+        color: #b5b5b5;
+      }
+      .tag {
+        display: inline-block;
+        border-radius: 6px;
+        background: #f1f1f1;
+        padding: 3px 8px;
+        margin: 0 4px 6px 0;
+      }
+      .progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 3px;
+        background: var(--ink);
+        transition: width 260ms ease;
+        z-index: 3;
+      }
+      .controls {
+        position: absolute;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        z-index: 3;
+      }
+      .controls button {
+        width: 34px;
+        height: 34px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background 120ms;
+      }
+      .controls button:hover {
+        background: rgba(0, 0, 0, 0.06);
+      }
+      .controls button:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+      .controls button:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .controls span {
+        min-width: 62px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--faint);
+        font-variant-numeric: tabular-nums;
+      }
+      body.scroll {
+        display: block;
+        overflow: auto;
+        height: auto;
+      }
+      body.scroll .stage {
+        zoom: 1;
+        width: auto;
+        height: auto;
+      }
+      body.scroll .slide {
+        position: relative;
+        inset: auto;
+        width: 1280px;
+        height: 720px;
+        zoom: var(--k);
+        opacity: 1;
+        visibility: visible;
+        margin-bottom: 8px;
+      }
+      body.scroll .progress,
+      body.scroll .controls {
+        display: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .slide,
+        .progress {
+          transition: none;
+        }
+      }
+      @page {
+        size: 1280px 720px;
+        margin: 0;
+      }
+      @media print {
+        html,
+        body {
+          height: auto;
+          background: #ffffff;
+        }
+        body {
+          display: block;
+          overflow: visible;
+        }
+        .stage {
+          zoom: 1;
+          width: auto;
+          height: auto;
+        }
+        .slide {
+          position: relative;
+          inset: auto;
+          width: 1280px;
+          height: 720px;
+          opacity: 1;
+          visibility: visible;
+          break-after: page;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .progress,
+        .controls {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol
+        id="mark"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"
+        />
+        <path d="M4 9h8" />
+        <path d="M12 15h8" />
+        <path d="M12 4v16" />
+      </symbol>
+      <symbol
+        id="arrow"
+        viewBox="0 0 44 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M6 8h30" />
+        <path d="M30 3l6 5l-6 5" />
+      </symbol>
+    </svg>
+
+    <main class="stage" id="stage">
+      <div class="progress" id="progress"></div>
+
+      <section class="slide" aria-label="Pavilion">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Builder.io Agent-Native Hackathon · 2026</span>
+        </div>
+        <div class="body" style="gap: 48px; align-items: center">
+          <div class="col" style="flex: 1; gap: 26px">
+            <h1>Plan the room.<br />Check every move.</h1>
+            <p class="lede" style="max-width: 500px">
+              You and an AI agent edit one event floor plan through the same
+              actions. A layout engine checks every change, and redesigns wait
+              for you to apply them.
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 6px">
+              <a class="pill primary" href="https://pavilion-nine.vercel.app"
+                >Try the live demo</a
+              >
+              <span class="pill secondary">Dami Shafe · Enoch</span>
+            </div>
+          </div>
+          <div
+            class="panel"
+            style="position: relative; width: 560px; padding: 30px 30px 34px"
+          >
+            <div
+              class="note"
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 14px;
+              "
+            >
+              <span>Nova Product Launch · Main hall</span>
+              <span class="num">18 × 12 m</span>
+            </div>
+            <img
+              class="shot"
+              style="border-radius: 3px"
+              src="/deck/nova.svg"
+              width="1200"
+              height="847"
+              alt="Floor plan of the Nova Product Launch demo: an 18 by 12 metre hall with a stage, two screens, six rows of twenty chairs, two desks, two exits and a pillar."
+            />
+            <div
+              class="card sage"
+              style="
+                position: absolute;
+                left: -34px;
+                bottom: -22px;
+                width: 216px;
+                border-radius: 4px;
+                padding: 20px;
+              "
+            >
+              <div class="label" style="font-size: 10px">Agent proposal</div>
+              <div class="big num" style="font-size: 62px; margin-top: 18px">
+                +20
+              </div>
+              <div
+                style="
+                  font-size: 17px;
+                  font-weight: 500;
+                  letter-spacing: -0.02em;
+                  margin-top: 4px;
+                "
+              >
+                seats, same hall
+              </div>
+              <div
+                class="num"
+                style="font-size: 12px; line-height: 1.7; margin-top: 16px"
+              >
+                <div style="display: flex; justify-content: space-between">
+                  <span>Seats</span><span>120 → 140</span>
+                </div>
+                <div style="display: flex; justify-content: space-between">
+                  <span>Cost</span><span>US$3,040 → US$3,130</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>01 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="The problem">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">The problem</span>
+        </div>
+        <div class="body col" style="justify-content: center; gap: 54px">
+          <h2 style="max-width: 900px">
+            Twenty more guests shouldn't mean redrawing the room.
+          </h2>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 20px;
+            "
+          >
+            <div class="card">
+              <div class="label">01</div>
+              <h3 style="margin-top: 36px">Plans are drawn, not checked</h3>
+              <p class="text" style="margin-top: 10px">
+                A drawing tool doesn't know what a wall, an aisle or an exit is.
+                Nothing stops a row of chairs from blocking a door.
+              </p>
+            </div>
+            <div class="card">
+              <div class="label">02</div>
+              <h3 style="margin-top: 36px">Every change is manual</h3>
+              <p class="text" style="margin-top: 10px">
+                A new headcount means moving rows by hand, recounting seats and
+                repricing the hire list, then hoping the three still agree.
+              </p>
+            </div>
+            <div class="card">
+              <div class="label">03</div>
+              <h3 style="margin-top: 36px">AI layouts are pictures</h3>
+              <p class="text" style="margin-top: 10px">
+                A generated layout that no code validated is a suggestion, not a
+                plan. A venue crew can't build from it.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>02 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="The principle">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">The principle</span>
+        </div>
+        <div class="body col" style="justify-content: center; gap: 48px">
+          <h2>The engine decides.<br />The agent proposes. You apply.</h2>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 20px;
+            "
+          >
+            <div class="card">
+              <div class="label">Layout engine</div>
+              <h3 style="margin-top: 30px">Checks every write</h3>
+              <p class="text" style="margin-top: 10px">
+                Deterministic TypeScript. Objects stay inside the walls, never
+                overlap, keep exits clear and respect locks. Seats and cost are
+                computed, never guessed.
+              </p>
+            </div>
+            <div class="card sage">
+              <div class="label">Agent</div>
+              <h3 style="margin-top: 30px">Works through the same actions</h3>
+              <p class="text" style="margin-top: 10px">
+                It can add, move and lock like you can. A redesign runs the
+                planner and comes back as a proposal tied to a plan version. The
+                plan itself doesn't change.
+              </p>
+            </div>
+            <div class="card dark">
+              <div class="label">You</div>
+              <h3 style="margin-top: 30px">Hold the only Apply button</h3>
+              <p class="text" style="margin-top: 10px">
+                Compare before and after on the plan or in 3D, then apply or
+                discard. The agent has no tool to apply a proposal or restore a
+                version.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>03 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="The product">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">The product</span>
+        </div>
+        <div class="body" style="gap: 40px; align-items: center">
+          <div class="col" style="width: 336px; gap: 20px">
+            <h2 class="small">One floor plan. Two editors.</h2>
+            <p class="text">
+              A scaled plan in millimetres. Drag, rotate and lock items, or ask
+              the agent. Both paths save the same versioned layout.
+            </p>
+            <div class="rows num">
+              <div><span>Seats</span><span>120 of 120 guests</span></div>
+              <div><span>Cost</span><span>US$3,040 of US$4,000</span></div>
+              <div><span>Layout check</span><span>No issues</span></div>
+            </div>
+            <p class="note">
+              Every number on screen is computed by the engine. Prices are
+              example data.
+            </p>
+          </div>
+          <div class="panel" style="flex: 1">
+            <img
+              class="shot"
+              src="/deck/plan.jpg"
+              width="1920"
+              height="1080"
+              alt="The Pavilion floor plan for the Nova Product Launch: stage, screens, 120 chairs, the item catalog, and seat, cost and layout check totals in the header."
+            />
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>04 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Agent proposal">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Agent proposal</span>
+        </div>
+        <div class="body" style="gap: 40px; align-items: center">
+          <div class="panel" style="flex: 1">
+            <img
+              class="shot"
+              src="/deck/proposal.jpg"
+              width="1920"
+              height="1080"
+              alt="The agent's reply beside the plan: a proposal bar showing seats 120 to 140 and cost US$3,040 to US$3,130, with Discard and Apply buttons."
+            />
+          </div>
+          <div class="col" style="width: 336px; gap: 18px">
+            <div class="label">“Fit 20 more seats”</div>
+            <h2 class="small">A proposal, not a surprise.</h2>
+            <div class="rows num">
+              <div>
+                <span>Seats</span
+                ><span>120 → 140<span class="delta">+20</span></span>
+              </div>
+              <div>
+                <span>Cost</span
+                ><span
+                  >US$3,040 → US$3,130<span class="delta">+US$90</span></span
+                >
+              </div>
+              <div><span>Changes</span><span>20 added · 0 moved</span></div>
+              <div><span>Locked items</span><span>4 kept in place</span></div>
+            </div>
+            <p class="note">
+              Recorded on the live demo. The agent called propose-layout and
+              answered in 14 seconds.
+            </p>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>05 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Guardrails">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Guardrails</span>
+        </div>
+        <div class="body col" style="justify-content: center; gap: 34px">
+          <h2>Wrong moves are refused.<br />Nothing is saved.</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <div class="card">
+              <div class="label">A chair dragged onto the stage</div>
+              <div
+                style="
+                  height: 104px;
+                  display: flex;
+                  align-items: center;
+                  margin-top: 14px;
+                "
+              >
+                <img
+                  src="/deck/refused.jpg"
+                  width="740"
+                  height="125"
+                  style="width: 100%; height: auto; border-radius: 10px"
+                  alt="Error message: Chair A5 would overlap Presentation stage."
+                />
+              </div>
+              <p class="text" style="margin-top: 14px">
+                The same check runs for a drag, an inspector edit and an agent
+                call. The message names the objects that clash.
+              </p>
+            </div>
+            <div class="card">
+              <div class="label">A proposal from an older version</div>
+              <div
+                style="
+                  height: 104px;
+                  display: flex;
+                  align-items: center;
+                  margin-top: 14px;
+                "
+              >
+                <img
+                  src="/deck/stale.jpg"
+                  width="1555"
+                  height="225"
+                  style="
+                    width: 100%;
+                    height: auto;
+                    border-radius: 10px;
+                    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
+                  "
+                  alt="Proposal bar with the note: The plan changed after this was proposed (v2, now v3), so it cannot be applied. The Apply button has become Regenerate."
+                />
+              </div>
+              <p class="text" style="margin-top: 14px">
+                Every write carries the version it was based on. Newer human
+                work always wins; the proposal is regenerated, never merged.
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px">
+            <span class="chip"
+              ><span class="tick">✓</span>Inside the walls</span
+            >
+            <span class="chip"><span class="tick">✓</span>No overlaps</span>
+            <span class="chip"
+              ><span class="tick">✓</span>Exits kept clear</span
+            >
+            <span class="chip"
+              ><span class="tick">✓</span>Locked items in place</span
+            >
+            <span class="chip"
+              ><span class="tick">✓</span>Version checked on every write</span
+            >
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>06 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="3D view">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">3D view</span>
+        </div>
+        <div class="body" style="gap: 40px; align-items: center">
+          <div class="col" style="width: 336px; gap: 20px">
+            <h2 class="small">Walk the room before anything is booked.</h2>
+            <p class="text">
+              One switch turns the saved plan into a 3D room. During a review,
+              the chairs the agent added rise into place in blue.
+            </p>
+            <p class="note">
+              Read-only view of the same data, not a separate model. Heights are
+              typical values, and the view says so.
+            </p>
+          </div>
+          <div class="panel" style="flex: 1">
+            <img
+              class="shot"
+              src="/deck/three.jpg"
+              width="1920"
+              height="1080"
+              alt="The proposal in 3D: rows of chairs facing a stage, with the twenty added chairs shown in blue."
+            />
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>07 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Setup pack">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Setup pack</span>
+        </div>
+        <div class="body" style="gap: 40px; align-items: center">
+          <div class="panel" style="flex: 1">
+            <img
+              class="shot"
+              src="/deck/pack.jpg"
+              width="1920"
+              height="1080"
+              alt="A setup pack: the scaled floor plan with dimensions, a scale bar and a north arrow, with Download and Print buttons."
+            />
+          </div>
+          <div class="col" style="width: 336px; gap: 18px">
+            <h2 class="small">Something a crew can build from.</h2>
+            <div class="rows">
+              <div><span>Scaled plan</span><span>SVG · PNG</span></div>
+              <div><span>Item list</span><span>by item and size</span></div>
+              <div>
+                <span>Seating rows</span><span>from the north wall</span>
+              </div>
+              <div><span>Placements</span><span>from the NW corner</span></div>
+              <div>
+                <span>Printable page</span><span>HTML, no scripts</span>
+              </div>
+            </div>
+            <p class="note">
+              A pack freezes one plan version. Ask the agent for it or press
+              Export; both run export-setup-pack.
+            </p>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>08 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Built on Agent-Native">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Built on Agent-Native</span>
+        </div>
+        <div class="body col" style="justify-content: center; gap: 30px">
+          <h2 class="small">One action layer for the person and the agent.</h2>
+          <div class="flow">
+            <div
+              class="col"
+              style="width: 236px; gap: 12px; justify-content: center"
+            >
+              <div class="node">
+                <div class="label">Canvas</div>
+                <div
+                  style="
+                    font-size: 15px;
+                    margin-top: 8px;
+                    letter-spacing: -0.01em;
+                  "
+                >
+                  You drag Chair A3
+                </div>
+              </div>
+              <div class="node">
+                <div class="label">Agent</div>
+                <div
+                  style="
+                    font-size: 15px;
+                    margin-top: 8px;
+                    letter-spacing: -0.01em;
+                  "
+                >
+                  “Move it closer to the stage”
+                </div>
+              </div>
+            </div>
+            <svg class="arrow"><use href="#arrow" /></svg>
+            <div
+              class="node"
+              style="flex: 1; background: var(--ink); color: #ffffff"
+            >
+              <div class="label" style="color: #a3a3a3">
+                defineAction() · actions/
+              </div>
+              <div class="mono" style="margin-top: 12px; font-size: 15px">
+                move-objects.ts
+              </div>
+              <div
+                class="mono"
+                style="margin-top: 14px; color: #c9c9c9; line-height: 1.9"
+              >
+                add-objects · update-object · lock-objects<br />
+                remove-objects · propose-layout<br />
+                export-setup-pack · view-screen
+              </div>
+            </div>
+            <svg class="arrow"><use href="#arrow" /></svg>
+            <div class="node col" style="width: 212px; justify-content: center">
+              <div class="label">Layout engine</div>
+              <div class="text" style="margin-top: 8px; font-size: 14px">
+                Validates the change, recomputes seats and cost
+              </div>
+            </div>
+            <svg class="arrow"><use href="#arrow" /></svg>
+            <div class="node col" style="width: 212px; justify-content: center">
+              <div class="label">PostgreSQL</div>
+              <div class="text" style="margin-top: 8px; font-size: 14px">
+                One transaction: new version, snapshot, audit row
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 28px;
+            "
+          >
+            <div>
+              <h3 style="font-size: 17px">The agent sees your screen</h3>
+              <p class="text" style="margin-top: 6px; font-size: 14px">
+                Navigation and selection live in application state. view-screen
+                returns them verified, so “this” means what you selected.
+              </p>
+            </div>
+            <div>
+              <h3 style="font-size: 17px">A human gate in the contract</h3>
+              <p class="text" style="margin-top: 6px; font-size: 14px">
+                apply-proposal and restore-version are UI-only actions, hidden
+                from the agent's tools and from MCP.
+              </p>
+            </div>
+            <div>
+              <h3 style="font-size: 17px">Useful without a model</h3>
+              <p class="text" style="margin-top: 6px; font-size: 14px">
+                Manual editing, the planner button, history and export all work
+                with no model key configured.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>09 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="What is real">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">What is real</span>
+        </div>
+        <div class="body" style="gap: 48px; align-items: center">
+          <div class="col" style="flex: 1; gap: 34px">
+            <h2 class="small">Built, tested and running.</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px 36px;
+              "
+            >
+              <div>
+                <div class="stat num">82</div>
+                <p class="text" style="margin-top: 8px">
+                  unit tests on geometry, the planner, proposals and export
+                </p>
+              </div>
+              <div>
+                <div class="stat num">156</div>
+                <p class="text" style="margin-top: 8px">
+                  theatre seats: the modelled limit of the demo hall at 1.2 m
+                  aisles, pinned by a test
+                </p>
+              </div>
+              <div>
+                <div class="stat num">2</div>
+                <p class="text" style="margin-top: 8px">
+                  live deployments: Vercel with Neon PostgreSQL, and a
+                  self-hosted server
+                </p>
+              </div>
+              <div>
+                <div class="stat num">24 h</div>
+                <p class="text" style="margin-top: 8px">
+                  guest sandboxes: every visitor gets their own event, with rate
+                  limits on agent calls
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="width: 400px">
+            <div class="label">Honest limits</div>
+            <div class="rows" style="margin-top: 16px">
+              <div>
+                <span style="color: var(--ink)"
+                  >Prices are example data, not supplier quotes.</span
+                >
+              </div>
+              <div>
+                <span style="color: var(--ink)"
+                  >Capacity is modelled seating, not legal occupancy.</span
+                >
+              </div>
+              <div>
+                <span style="color: var(--ink)"
+                  >The layout check is not a certified evacuation model.</span
+                >
+              </div>
+              <div>
+                <span style="color: var(--ink)"
+                  >The planner recommends layouts for theatre and banquet
+                  seating only.</span
+                >
+              </div>
+            </div>
+            <p class="note" style="margin-top: 14px">
+              Built during the hackathon on the Agent-Native chat template.
+              Everything reused is listed in docs/PROVENANCE.md.
+            </p>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>10 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Who it is for and what is next">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Who and next</span>
+        </div>
+        <div class="body col" style="justify-content: center; gap: 44px">
+          <h2>For the people who set up the room.</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <div class="card">
+              <div class="label">Who it's for</div>
+              <div class="rows" style="margin-top: 16px">
+                <div>
+                  <span style="color: var(--ink)"
+                    >Event planners and agencies</span
+                  ><span style="color: var(--muted)"
+                    >revise a layout with the client on the call</span
+                  >
+                </div>
+                <div>
+                  <span style="color: var(--ink)">Venues and hotels</span
+                  ><span style="color: var(--muted)"
+                    >answer “will it fit?” with a checked plan</span
+                  >
+                </div>
+                <div>
+                  <span style="color: var(--ink)">Setup crews</span
+                  ><span style="color: var(--muted)"
+                    >build from one frozen version</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="card sage">
+              <div class="label">Next, not built yet</div>
+              <div class="rows" style="margin-top: 16px">
+                <div style="border-color: rgba(44, 58, 28, 0.18)">
+                  <span style="color: var(--sage-ink)"
+                    >Budget and constraint edits by chat</span
+                  >
+                </div>
+                <div style="border-color: rgba(44, 58, 28, 0.18)">
+                  <span style="color: var(--sage-ink)">Undo and redo</span>
+                </div>
+                <div style="border-color: rgba(44, 58, 28, 0.18)">
+                  <span style="color: var(--sage-ink)"
+                    >Exhibition and workshop layouts</span
+                  >
+                </div>
+                <div style="border-color: rgba(44, 58, 28, 0.18)">
+                  <span style="color: var(--sage-ink)">PDF setup packs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span>pavilion-nine.vercel.app</span><span>11 / 12</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Try it">
+        <div class="top">
+          <span class="mark"
+            ><svg><use href="#mark" /></svg>Pavilion</span
+          >
+          <span class="label">Try it</span>
+        </div>
+        <div
+          class="body col"
+          style="
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 30px;
+          "
+        >
+          <h1 style="font-size: 112px">Plan your floor.</h1>
+          <p class="lede" style="max-width: 560px">
+            No sign-up. You get your own copy of the Nova Product Launch,
+            deleted after 24 hours.
+          </p>
+          <div style="display: flex; gap: 10px">
+            <a class="pill primary" href="https://pavilion-nine.vercel.app"
+              >pavilion-nine.vercel.app</a
+            >
+            <a
+              class="pill secondary"
+              href="https://github.com/Enoch208/pavilion"
+              >github.com/Enoch208/pavilion</a
+            >
+          </div>
+          <p class="text" style="margin-top: 10px">
+            <span class="label" style="margin-right: 10px">Team</span>Dami Shafe
+            · Enoch
+          </p>
+        </div>
+        <div class="foot">
+          <span>Built with Agent-Native</span><span>12 / 12</span>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button type="button" id="prev" aria-label="Previous slide">‹</button>
+        <span id="count" aria-live="polite">1 / 12</span>
+        <button type="button" id="next" aria-label="Next slide">›</button>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        const slides = Array.from(document.querySelectorAll(".slide"));
+        const progress = document.getElementById("progress");
+        const count = document.getElementById("count");
+        const prev = document.getElementById("prev");
+        const next = document.getElementById("next");
+        const root = document.documentElement;
+        let index = 0;
+
+        const clamp = (value) =>
+          Math.max(0, Math.min(slides.length - 1, value));
+
+        function show(target, record) {
+          index = clamp(target);
+          slides.forEach((slide, position) => {
+            const active = position === index;
+            slide.classList.toggle("is-active", active);
+            slide.setAttribute("aria-hidden", active ? "false" : "true");
+          });
+          progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+          count.textContent = `${index + 1} / ${slides.length}`;
+          prev.disabled = index === 0;
+          next.disabled = index === slides.length - 1;
+          if (record) history.replaceState(null, "", `#${index + 1}`);
+        }
+
+        function fit() {
+          const width = root.clientWidth;
+          const height = innerHeight;
+          const scroll = width < 700 && height > width;
+          document.body.classList.toggle("scroll", scroll);
+          const scale = scroll
+            ? width / 1280
+            : Math.min(width / 1280, height / 720);
+          root.style.setProperty("--k", String(scale));
+          if (scroll)
+            slides.forEach((slide) =>
+              slide.setAttribute("aria-hidden", "false"),
+            );
+          else show(index, false);
+        }
+
+        function fromHash() {
+          const wanted = Number.parseInt(location.hash.slice(1), 10);
+          return Number.isFinite(wanted) ? wanted - 1 : 0;
+        }
+
+        prev.addEventListener("click", () => show(index - 1, true));
+        next.addEventListener("click", () => show(index + 1, true));
+        addEventListener("keydown", (event) => {
+          if (event.metaKey || event.ctrlKey || event.altKey) return;
+          if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+            event.preventDefault();
+            show(index + 1, true);
+          } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
+            event.preventDefault();
+            show(index - 1, true);
+          } else if (event.key === "Home") show(0, true);
+          else if (event.key === "End") show(slides.length - 1, true);
+          else if (event.key === "f" && document.fullscreenEnabled) {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else root.requestFullscreen();
+          }
+        });
+
+        let touchX = null;
+        addEventListener("touchstart", (event) => {
+          touchX = event.changedTouches[0].clientX;
+        });
+        addEventListener("touchend", (event) => {
+          if (touchX === null || document.body.classList.contains("scroll"))
+            return;
+          const moved = event.changedTouches[0].clientX - touchX;
+          if (Math.abs(moved) > 48) show(index + (moved < 0 ? 1 : -1), true);
+          touchX = null;
+        });
+
+        addEventListener("resize", fit);
+        addEventListener("load", fit);
+        addEventListener("orientationchange", fit);
+        addEventListener("hashchange", () => show(fromHash(), false));
+        index = clamp(fromHash());
+        fit();
+      })();
+    </script>
+  </body>
+</html>
