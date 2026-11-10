@@ -20,10 +20,10 @@
       property="og:image"
       content="https://pavilion-nine.vercel.app/og.png"
     />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" href="favicon.svg" />
     <link
       rel="preload"
-      href="/deck/inter.woff2"
+      href="deck/inter.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -31,7 +31,7 @@
     <style>
       @font-face {
         font-family: "Inter Variable";
-        src: url("/deck/inter.woff2") format("woff2");
+        src: url("deck/inter.woff2") format("woff2");
         font-weight: 100 900;
         font-display: swap;
       }
@@ -452,6 +452,33 @@
         }
       }
     </style>
+    <noscript>
+      <style>
+        html,
+        body {
+          height: auto;
+        }
+        body {
+          display: block;
+          overflow: auto;
+        }
+        .stage {
+          zoom: 1;
+          height: auto;
+          margin: 0 auto;
+        }
+        .slide {
+          position: relative;
+          height: 720px;
+          opacity: 1;
+          visibility: visible;
+        }
+        .progress,
+        .controls {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
@@ -528,7 +555,7 @@
             <img
               class="shot"
               style="border-radius: 3px"
-              src="/deck/nova.svg"
+              src="deck/nova.svg"
               width="1200"
               height="847"
               alt="Floor plan of the Nova Product Launch demo: an 18 by 12 metre hall with a stage, two screens, six rows of twenty chairs, two desks, two exits and a pillar."
@@ -703,7 +730,7 @@
           <div class="panel" style="flex: 1">
             <img
               class="shot"
-              src="/deck/plan.jpg"
+              src="deck/plan.jpg"
               width="1920"
               height="1080"
               alt="The Pavilion floor plan for the Nova Product Launch: stage, screens, 120 chairs, the item catalog, and seat, cost and layout check totals in the header."
@@ -726,7 +753,7 @@
           <div class="panel" style="flex: 1">
             <img
               class="shot"
-              src="/deck/proposal.jpg"
+              src="deck/proposal.jpg"
               width="1920"
               height="1080"
               alt="The agent's reply beside the plan: a proposal bar showing seats 120 to 140 and cost US$3,040 to US$3,130, with Discard and Apply buttons."
@@ -781,7 +808,7 @@
                 "
               >
                 <img
-                  src="/deck/refused.jpg"
+                  src="deck/refused.jpg"
                   width="740"
                   height="125"
                   style="width: 100%; height: auto; border-radius: 10px"
@@ -804,7 +831,7 @@
                 "
               >
                 <img
-                  src="/deck/stale.jpg"
+                  src="deck/stale.jpg"
                   width="1555"
                   height="225"
                   style="
@@ -865,7 +892,7 @@
           <div class="panel" style="flex: 1">
             <img
               class="shot"
-              src="/deck/three.jpg"
+              src="deck/three.jpg"
               width="1920"
               height="1080"
               alt="The proposal in 3D: rows of chairs facing a stage, with the twenty added chairs shown in blue."
@@ -888,7 +915,7 @@
           <div class="panel" style="flex: 1">
             <img
               class="shot"
-              src="/deck/pack.jpg"
+              src="deck/pack.jpg"
               width="1920"
               height="1080"
               alt="A setup pack: the scaled floor plan with dimensions, a scale bar and a north arrow, with Download and Print buttons."
